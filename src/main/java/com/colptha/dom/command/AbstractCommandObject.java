@@ -7,17 +7,17 @@ import java.util.Date;
  */
 public abstract class AbstractCommandObject {
 
-    private Integer id;
+    private Integer databaseId;
     private Integer version;
     private Date createdOn;
     private Date updatedOn;
 
-    public Integer getId() {
-        return id;
+    public Integer getDatabaseId() {
+        return databaseId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setDatabaseId(Integer databaseId) {
+        this.databaseId = databaseId;
     }
 
     public Integer getVersion() {

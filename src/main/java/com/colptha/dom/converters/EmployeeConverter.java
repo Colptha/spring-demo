@@ -16,7 +16,7 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         EmployeeForm employeeForm = new EmployeeForm();
         employeeForm.setLastName(employee.getLastName());
         employeeForm.setFirstName(employee.getFirstName());
-        employeeForm.setEmployeeCode(employee.getEmployeeCode());
+        employeeForm.setEmployeeId(employee.getEmployeeId());
         employeeForm.setCreatedOn(employee.getCreatedOn());
         employeeForm.setUpdatedOn(employee.getUpdatedOn());
         return employeeForm;
@@ -24,11 +24,10 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
 
     public Employee convert(EmployeeForm employeeForm) {
         Employee employee = new Employee();
+        // dates will be set on the way into the database
         employee.setLastName(employeeForm.getLastName());
         employee.setFirstName(employeeForm.getFirstName());
-        employee.setEmployeeCode(employeeForm.getEmployeeCode());
-        employee.setCreatedOn(employeeForm.getCreatedOn());
-        employee.setUpdatedOn(employeeForm.getUpdatedOn());
+        employee.setEmployeeId(employeeForm.getEmployeeId());
         return employee;
     }
 

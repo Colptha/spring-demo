@@ -34,19 +34,26 @@ public class EmployeeServiceMapImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeForm findByEIN(String employeeCode) throws NoSuchElementException {
+    public EmployeeForm findOne(String employeeCode) throws NoSuchElementException {
         return employeeConverter.convert(employees.get(employeeCode));
     }
 
     @Override
     public EmployeeForm saveOrUpdate(EmployeeForm employeeForm) {
+        // dates will be trashed during conversion (for consistency of created on dates)
         Employee employee = employeeConverter.convert(employeeForm);
+        String employeeId = employee.getEmployeeId();
 
-        // in database backed services hibernate will do this
+        // check for and add creation date
+        if (employees.containsKey(employeeId)) {
+            employee.setCreatedOn(employees.get(employeeId).getCreatedOn());
+        }
+
+        // in database backed services hibernate will do this, have to manually implement here
         employee.updateTimeStamps();
-        employees.put(employee.getEmployeeCode(), employee);
+        employees.put(employeeId, employee);
 
-        // send back with timestamps
+        // send back with valid timestamps
         return employeeConverter.convert(employee);
     }
 

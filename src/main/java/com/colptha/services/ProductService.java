@@ -9,12 +9,5 @@ import java.util.NoSuchElementException;
 /**
  * Created by Colptha on 4/1/17.
  */
-public interface ProductService {
-    Map<ProductId, ProductForm> listAll();
-
-    ProductForm findByEIN(ProductId productId) throws NoSuchElementException;
-
-    ProductForm saveOrUpdate(ProductForm productForm);
-
-    ProductForm delete(ProductId productId);
+public interface ProductService extends CRUDService<ProductForm, ProductId> {
 }

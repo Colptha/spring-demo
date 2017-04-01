@@ -12,7 +12,7 @@ public class Employee extends AbstractEntityObject {
 
     private String firstName;
     private String lastName;
-    private String employeeCode;
+    private String employeeId;
 
     public String getFirstName() {
         return firstName;
@@ -30,11 +30,11 @@ public class Employee extends AbstractEntityObject {
         this.lastName = lastName;
     }
 
-    public String getEmployeeCode() {
-        return employeeCode;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
-    public void setEmployeeCode(String employeeCode) {
-        this.employeeCode = employeeCode;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 }

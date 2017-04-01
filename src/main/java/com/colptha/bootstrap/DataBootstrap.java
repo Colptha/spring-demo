@@ -30,19 +30,19 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         EmployeeForm employee3 = new EmployeeForm();
         EmployeeForm employee4 = new EmployeeForm();
         EmployeeForm employee5 = new EmployeeForm();
-        employee1.setEmployeeCode("aa1");
+        employee1.setEmployeeId("aa1");
         employee1.setFirstName("John");
         employee1.setLastName("Gill");
-        employee2.setEmployeeCode("aa2");
+        employee2.setEmployeeId("aa2");
         employee2.setFirstName("Sandy");
         employee2.setLastName("Wilson");
-        employee3.setEmployeeCode("aa3");
+        employee3.setEmployeeId("aa3");
         employee3.setFirstName("Martin");
         employee3.setLastName("Bucer");
-        employee4.setEmployeeCode("aa4");
+        employee4.setEmployeeId("aa4");
         employee4.setFirstName("Bill");
         employee4.setLastName("Thompson");
-        employee5.setEmployeeCode("aa5");
+        employee5.setEmployeeId("aa5");
         employee5.setFirstName("Jason");
         employee5.setLastName("Ruby");
 

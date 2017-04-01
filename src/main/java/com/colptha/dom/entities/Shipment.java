@@ -1,5 +1,6 @@
 package com.colptha.dom.entities;
 
+import com.colptha.dom.enums.ProductId;
 import com.colptha.dom.enums.ShipmentType;
 
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ public class Shipment extends AbstractEntityObject {
 
     private Integer shipmentId;
     private ShipmentType shipmentType;
-    private Map<String, Integer> productIdToQuantityMap = new HashMap<>();
+    private Map<ProductId, Integer> productIdToQuantityMap = new HashMap<>();
 
     public Integer getShipmentId() {
         return shipmentId;
@@ -32,11 +33,11 @@ public class Shipment extends AbstractEntityObject {
         this.shipmentType = shipmentType;
     }
 
-    public Map<String, Integer> getProductIdToQuantityMap() {
+    public Map<ProductId, Integer> getProductIdToQuantityMap() {
         return productIdToQuantityMap;
     }
 
-    public void setProductIdToQuantityMap(Map<String, Integer> productIdToQuantityMap) {
+    public void setProductIdToQuantityMap(Map<ProductId, Integer> productIdToQuantityMap) {
         this.productIdToQuantityMap = productIdToQuantityMap;
     }
 }
