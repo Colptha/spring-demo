@@ -7,7 +7,7 @@ import javax.persistence.Entity;
  * Created by Colptha on 3/31/17.
  */
 @Entity
-public class Employee extends AbstractDomainObject {
+public class Employee extends AbstractEntityObject {
 
 
     private String firstName;

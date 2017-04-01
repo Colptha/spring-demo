@@ -24,6 +24,7 @@ public class EmployeeController {
     public String root() {
         return "redirect:/employee/all";
     }
+
     @RequestMapping("/all")
     public String all(Model model) {
         model.addAttribute("employees", employeeService.listAll());

@@ -1,0 +1,7 @@
+package com.colptha.services;
+
+/**
+ * Created by Colptha on 4/1/17.
+ */
+public interface ShipmentService {
+}

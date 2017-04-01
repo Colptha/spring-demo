@@ -1,6 +1,6 @@
 package com.colptha.bootstrap;
 
-import com.colptha.dom.entities.Employee;
+import com.colptha.dom.command.EmployeeForm;
 import com.colptha.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -25,11 +25,11 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private void loadEmployees() {
-        Employee employee1 = new Employee();
-        Employee employee2 = new Employee();
-        Employee employee3 = new Employee();
-        Employee employee4 = new Employee();
-        Employee employee5 = new Employee();
+        EmployeeForm employee1 = new EmployeeForm();
+        EmployeeForm employee2 = new EmployeeForm();
+        EmployeeForm employee3 = new EmployeeForm();
+        EmployeeForm employee4 = new EmployeeForm();
+        EmployeeForm employee5 = new EmployeeForm();
         employee1.setEmployeeCode("aa1");
         employee1.setFirstName("John");
         employee1.setLastName("Gill");
