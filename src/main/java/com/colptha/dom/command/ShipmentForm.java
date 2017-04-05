@@ -1,6 +1,7 @@
 package com.colptha.dom.command;
 
 import com.colptha.dom.entities.ProductLot;
+import com.colptha.dom.enums.ShipmentType;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,6 +12,7 @@ import java.util.Set;
 public class ShipmentForm extends AbstractCommandObject{
     private Integer shipmentId;
     private Set<ProductLot> productLots = new HashSet<>();
+    private ShipmentType shipmentType;
 
     public Integer getShipmentId() {
         return shipmentId;
@@ -26,5 +28,13 @@ public class ShipmentForm extends AbstractCommandObject{
 
     public void setProductLots(Set<ProductLot> productLots) {
         this.productLots = productLots;
+    }
+
+    public ShipmentType getShipmentType() {
+        return shipmentType;
+    }
+
+    public void setShipmentType(ShipmentType shipmentType) {
+        this.shipmentType = shipmentType;
     }
 }

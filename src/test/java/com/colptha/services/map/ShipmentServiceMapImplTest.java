@@ -3,6 +3,7 @@ package com.colptha.services.map;
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
+import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.junit.Test;
@@ -60,6 +61,7 @@ public class ShipmentServiceMapImplTest {
         Integer productQuantity = productService.findOne(productId).getInventory();
 
         ShipmentForm shipmentForm = new ShipmentForm();
+        shipmentForm.setShipmentType(ShipmentType.INBOUND);
         shipmentForm.getProductLots().add(productLot);
 
         ShipmentForm savedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
@@ -94,13 +96,14 @@ public class ShipmentServiceMapImplTest {
 
         shipmentForm.setProductLots(newProductLotSet);
         assert shipmentForm.getShipmentId().equals(shipmentId);
+        shipmentForm.setShipmentType(ShipmentType.OUTBOUND);
 
         ShipmentForm updatedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
 
         System.out.println("productInventory before update: " + productInventory);
         System.out.println("discrepancy: " + discrepancy);
         System.out.println("actual data after update: " + productService.findOne(productId).getInventory());
-        assert productService.findOne(productId).getInventory() == productInventory + discrepancy;
+        assert productService.findOne(productId).getInventory() == productInventory - discrepancy;
         assert updatedShipmentForm.getProductLots() != null;
         assert updatedShipmentForm.getShipmentId().equals(shipmentId);
         assert updatedShipmentForm.getUpdatedOn() != shipmentForm.getUpdatedOn();

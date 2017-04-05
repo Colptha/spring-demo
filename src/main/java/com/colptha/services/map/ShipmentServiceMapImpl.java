@@ -5,6 +5,7 @@ import com.colptha.dom.converters.ShipmentConverter;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.entities.Shipment;
 import com.colptha.dom.enums.ProductId;
+import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import java.util.*;
 @Profile("map")
 public class ShipmentServiceMapImpl implements ShipmentService {
 
+    private static final Integer UNDO = -1;
     private Map<Integer, Shipment> shipmentMap = new HashMap<>();
     private ShipmentConverter shipmentConverter;
     private ProductService productService;
@@ -53,6 +55,8 @@ public class ShipmentServiceMapImpl implements ShipmentService {
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
 
         Shipment shipment = shipmentConverter.convert(shipmentForm);
+        ShipmentType shipmentType = shipment.getShipmentType();
+
         Set<ProductLot> incomingLots = shipment.getProductLots();
 
         Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
@@ -78,10 +82,12 @@ public class ShipmentServiceMapImpl implements ShipmentService {
                     if (priorLot.isPresent()) {
                         Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.get().getQuantity();
 
-                        productService.updateInventory(incomingProductId, inventoryDiscrepancy);
+                        productService.updateInventory(
+                                incomingProductId, shipmentType.getInventoryDirection() * inventoryDiscrepancy);
 
                     } else {
-                            productService.updateInventory(incomingProductId, incomingProductLot.getQuantity());
+                            productService.updateInventory(
+                                    incomingProductId, shipmentType.getInventoryDirection() * incomingProductLot.getQuantity());
 
                     }
                 } catch (Exception e) {
@@ -96,7 +102,8 @@ public class ShipmentServiceMapImpl implements ShipmentService {
                     ProductId productId = productLot.getProductId();
                     if (oldProductIdList.contains(productId)) {
                         try {
-                            productService.updateInventory(productId, -1 * productLot.getQuantity());
+                            productService.updateInventory(
+                                    productId, UNDO * shipmentType.getInventoryDirection() * productLot.getQuantity());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -108,7 +115,7 @@ public class ShipmentServiceMapImpl implements ShipmentService {
 
             incomingLots.forEach(lot -> {
                 try {
-                    productService.updateInventory(lot.getProductId(), lot.getQuantity());
+                    productService.updateInventory(lot.getProductId(), shipmentType.getInventoryDirection() * lot.getQuantity());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

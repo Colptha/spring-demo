@@ -18,6 +18,7 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
         shipmentForm.setCreatedOn(shipment.getCreatedOn());
         shipmentForm.setUpdatedOn(shipment.getUpdatedOn());
         shipmentForm.setProductLots(shipment.getProductLots());
+        shipmentForm.setShipmentType(shipment.getShipmentType());
 
         return shipmentForm;
     }
@@ -26,6 +27,7 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
         Shipment shipment = new Shipment();
         shipment.setProductLots(shipmentForm.getProductLots());
         shipment.setShipmentId(shipmentForm.getShipmentId());
+        shipment.setShipmentType(shipmentForm.getShipmentType());
 
         return shipment;
     }

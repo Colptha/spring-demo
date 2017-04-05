@@ -5,6 +5,7 @@ import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
+import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.EmployeeService;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
@@ -186,13 +187,14 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
     private void loadShipments() {
         ProductLot productLot1 = new ProductLot();
         productLot1.setProductId(ProductId.A1);
-        productLot1.setQuantity(53);
+        productLot1.setQuantity(453);
 
         ProductLot productLot2 = new ProductLot();
         productLot2.setProductId(ProductId.B3);
-        productLot2.setQuantity(25);
+        productLot2.setQuantity(525);
 
         ShipmentForm shipment1 = new ShipmentForm();
+        shipment1.setShipmentType(ShipmentType.INBOUND);
         Set<ProductLot> productLotSet = new HashSet<>();
         productLotSet.add(productLot1);
         productLotSet.add(productLot2);
@@ -208,8 +210,9 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         productLot.setProductId(productId);
         productLot.setQuantity(amountAdded);
 
-        ShipmentForm shipmentForm = new ShipmentForm();
-        shipmentForm.getProductLots().add(productLot);
-        shipmentService.saveOrUpdate(shipmentForm);
+        ShipmentForm shipment2 = new ShipmentForm();
+        shipment2.setShipmentType(ShipmentType.INBOUND);
+        shipment2.getProductLots().add(productLot);
+        shipmentService.saveOrUpdate(shipment2);
     }
 }

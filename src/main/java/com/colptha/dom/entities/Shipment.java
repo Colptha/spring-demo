@@ -1,5 +1,7 @@
 package com.colptha.dom.entities;
 
+import com.colptha.dom.enums.ShipmentType;
+
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
@@ -14,6 +16,7 @@ import java.util.Set;
 public class Shipment extends AbstractEntityObject {
 
     private Integer shipmentId;
+    private ShipmentType shipmentType;
 
     @ElementCollection
     @CollectionTable(name = "PRODUCT_LOT", joinColumns = @JoinColumn(name = "shipment_id"))
@@ -33,5 +36,13 @@ public class Shipment extends AbstractEntityObject {
 
     public void setProductLots(Set<ProductLot> productLots) {
         this.productLots = productLots;
+    }
+
+    public ShipmentType getShipmentType() {
+        return shipmentType;
+    }
+
+    public void setShipmentType(ShipmentType shipmentType) {
+        this.shipmentType = shipmentType;
     }
 }
