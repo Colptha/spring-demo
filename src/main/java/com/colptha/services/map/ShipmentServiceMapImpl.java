@@ -53,73 +53,24 @@ public class ShipmentServiceMapImpl implements ShipmentService {
 
     @Override
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
-
         Shipment shipment = shipmentConverter.convert(shipmentForm);
         ShipmentType shipmentType = shipment.getShipmentType();
-
-        Set<ProductLot> incomingLots = shipment.getProductLots();
+        Set<ProductLot> currentLots = shipment.getProductLots();
 
         Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
 
         if (shipmentId.isPresent()) {
             Shipment priorShipment = shipmentMap.get(shipmentId.get());
             shipment.setCreatedOn(priorShipment.getCreatedOn());
-
-            List<ProductId> oldProductIdList = new ArrayList<>();
-            priorShipment.getProductLots().forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
-            List<ProductId> newProductIdList = new ArrayList<>();
-
             Set<ProductLot> priorLots = priorShipment.getProductLots();
 
-            incomingLots.forEach(incomingProductLot -> {
-                ProductId incomingProductId = incomingProductLot.getProductId();
-                newProductIdList.add(incomingProductId);
+            List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
+            removeDeletedLots(lotsToRemoveByProductId, priorLots, shipmentType);
+            updateProductInventoryOnModifiedLots(currentLots, priorLots, shipmentType);
 
-                Optional<ProductLot> priorLot =
-                        priorLots.stream().filter(lot -> lot.getProductId() == incomingProductId).findFirst();
-
-                try {
-                    if (priorLot.isPresent()) {
-                        Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.get().getQuantity();
-
-                        productService.updateInventory(
-                                incomingProductId, shipmentType.getInventoryDirection() * inventoryDiscrepancy);
-
-                    } else {
-                            productService.updateInventory(
-                                    incomingProductId, shipmentType.getInventoryDirection() * incomingProductLot.getQuantity());
-
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
-
-            oldProductIdList.removeAll(newProductIdList);
-
-            if (!oldProductIdList.isEmpty()) {
-                priorLots.forEach(productLot -> {
-                    ProductId productId = productLot.getProductId();
-                    if (oldProductIdList.contains(productId)) {
-                        try {
-                            productService.updateInventory(
-                                    productId, UNDO * shipmentType.getInventoryDirection() * productLot.getQuantity());
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
         } else {
             shipment.setShipmentId(getNextId());
-
-            incomingLots.forEach(lot -> {
-                try {
-                    productService.updateInventory(lot.getProductId(), shipmentType.getInventoryDirection() * lot.getQuantity());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });
+            updateProductInventoryOnNewShipment(currentLots, shipmentType);
         }
 
         shipment.updateTimeStamps();
@@ -140,5 +91,69 @@ public class ShipmentServiceMapImpl implements ShipmentService {
 
         Integer largest = Collections.max(shipmentMap.keySet());
         return largest + 1;
+    }
+
+    private void removeDeletedLots(List<ProductId> oldProductIdList, Set<ProductLot> priorLots,
+                                   ShipmentType shipmentType) {
+
+        if (!oldProductIdList.isEmpty()) {
+            priorLots.forEach(productLot -> {
+                ProductId productId = productLot.getProductId();
+                if (oldProductIdList.contains(productId)) {
+                    try {
+                        productService.updateInventory(
+                                productId, UNDO * shipmentType.getInventoryDirection() * productLot.getQuantity());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
+    private List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
+        List<ProductId> oldProductIdList = new ArrayList<>();
+        priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
+        List<ProductId> newProductIdList = new ArrayList<>();
+        currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
+        oldProductIdList.removeAll(newProductIdList);
+        return oldProductIdList;
+    }
+
+    private void updateProductInventoryOnModifiedLots(Set<ProductLot> currentLots, Set<ProductLot> priorLots,
+                                                      ShipmentType shipmentType) {
+
+        currentLots.forEach(incomingProductLot -> {
+            ProductId incomingProductId = incomingProductLot.getProductId();
+
+            Optional<ProductLot> priorLot =
+                    priorLots.stream().filter(lot -> lot.getProductId() == incomingProductId).findFirst();
+
+            try {
+                if (priorLot.isPresent()) {
+                    Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.get().getQuantity();
+
+                    productService.updateInventory(
+                            incomingProductId, shipmentType.getInventoryDirection() * inventoryDiscrepancy);
+
+                } else {
+                    productService.updateInventory(
+                            incomingProductId, shipmentType.getInventoryDirection() * incomingProductLot.getQuantity());
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void updateProductInventoryOnNewShipment(Set<ProductLot> currentLots, ShipmentType shipmentType) {
+        currentLots.forEach(lot -> {
+            try {
+                productService.updateInventory(lot.getProductId(), shipmentType.getInventoryDirection() * lot.getQuantity());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
