@@ -21,7 +21,6 @@ import java.util.*;
 @Profile("map")
 public class ShipmentServiceMapImpl implements ShipmentService {
 
-    private static final Integer UNDO = -1;
     private Map<Integer, Shipment> shipmentMap = new HashMap<>();
     private ShipmentConverter shipmentConverter;
     private ProductService productService;
@@ -65,12 +64,12 @@ public class ShipmentServiceMapImpl implements ShipmentService {
             Set<ProductLot> priorLots = priorShipment.getProductLots();
 
             List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-            removeDeletedLots(lotsToRemoveByProductId, priorLots, shipmentType);
-            updateProductInventoryOnModifiedLots(currentLots, priorLots, shipmentType);
+            removeDeletedLots(lotsToRemoveByProductId, priorLots, shipmentType, productService);
+            updateProductInventoryOnModifiedLots(currentLots, priorLots, shipmentType, productService);
 
         } else {
             shipment.setShipmentId(getNextId());
-            updateProductInventoryOnNewShipment(currentLots, shipmentType);
+            updateProductInventoryOnNewShipment(currentLots, shipmentType, productService);
         }
 
         shipment.updateTimeStamps();
@@ -93,67 +92,5 @@ public class ShipmentServiceMapImpl implements ShipmentService {
         return largest + 1;
     }
 
-    private void removeDeletedLots(List<ProductId> oldProductIdList, Set<ProductLot> priorLots,
-                                   ShipmentType shipmentType) {
 
-        if (!oldProductIdList.isEmpty()) {
-            priorLots.forEach(productLot -> {
-                ProductId productId = productLot.getProductId();
-                if (oldProductIdList.contains(productId)) {
-                    try {
-                        productService.updateInventory(
-                                productId, UNDO * shipmentType.getInventoryDirection() * productLot.getQuantity());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
-    private List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
-        List<ProductId> oldProductIdList = new ArrayList<>();
-        priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
-        List<ProductId> newProductIdList = new ArrayList<>();
-        currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
-        oldProductIdList.removeAll(newProductIdList);
-        return oldProductIdList;
-    }
-
-    private void updateProductInventoryOnModifiedLots(Set<ProductLot> currentLots, Set<ProductLot> priorLots,
-                                                      ShipmentType shipmentType) {
-
-        currentLots.forEach(incomingProductLot -> {
-            ProductId incomingProductId = incomingProductLot.getProductId();
-
-            Optional<ProductLot> priorLot =
-                    priorLots.stream().filter(lot -> lot.getProductId() == incomingProductId).findFirst();
-
-            try {
-                if (priorLot.isPresent()) {
-                    Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.get().getQuantity();
-
-                    productService.updateInventory(
-                            incomingProductId, shipmentType.getInventoryDirection() * inventoryDiscrepancy);
-
-                } else {
-                    productService.updateInventory(
-                            incomingProductId, shipmentType.getInventoryDirection() * incomingProductLot.getQuantity());
-
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    private void updateProductInventoryOnNewShipment(Set<ProductLot> currentLots, ShipmentType shipmentType) {
-        currentLots.forEach(lot -> {
-            try {
-                productService.updateInventory(lot.getProductId(), shipmentType.getInventoryDirection() * lot.getQuantity());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 }

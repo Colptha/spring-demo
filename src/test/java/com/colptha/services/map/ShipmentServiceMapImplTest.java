@@ -101,8 +101,17 @@ public class ShipmentServiceMapImplTest {
         ShipmentForm updatedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
 
         System.out.println("productInventory before update: " + productInventory);
+        System.out.println("oldProductLotInventory: " + oldProductLotInventory);
+        System.out.println("newProductLotInventory: " + newProductLotInventory);
         System.out.println("discrepancy: " + discrepancy);
         System.out.println("actual data after update: " + productService.findOne(productId).getInventory());
+// TODO: fix this
+//        productInventory before update: 525
+//        oldProductLotInventory: 525
+//        newProductLotInventory: 200
+//        discrepancy: -325
+//        actual data after update: 850
+
         assert productService.findOne(productId).getInventory() == productInventory - discrepancy;
         assert updatedShipmentForm.getProductLots() != null;
         assert updatedShipmentForm.getShipmentId().equals(shipmentId);

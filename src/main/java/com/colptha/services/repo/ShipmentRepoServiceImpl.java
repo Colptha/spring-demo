@@ -2,15 +2,17 @@ package com.colptha.services.repo;
 
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.converters.ShipmentConverter;
+import com.colptha.dom.entities.ProductLot;
+import com.colptha.dom.entities.Shipment;
+import com.colptha.dom.enums.ShipmentType;
+import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import com.colptha.services.repo.interfaces.ShipmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Created by Colptha on 4/5/17.
@@ -20,6 +22,12 @@ import java.util.NoSuchElementException;
 public class ShipmentRepoServiceImpl implements ShipmentService {
     private ShipmentRepository shipmentRepository;
     private ShipmentConverter shipmentConverter;
+    private ProductService productService;
+
+    @Autowired
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
 
     @Autowired
     public void setShipmentConverter(ShipmentConverter shipmentConverter) {
@@ -47,7 +55,29 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
 
     @Override
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
-        return shipmentConverter.convert(shipmentRepository.save(shipmentConverter.convert(shipmentForm)));
+        Shipment shipment = shipmentConverter.convert(shipmentForm);
+        ShipmentType shipmentType = shipment.getShipmentType();
+        Set<ProductLot> currentLots = shipment.getProductLots();
+
+        Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
+
+        if (shipmentId.isPresent()) {
+            Shipment priorShipment = shipmentRepository.findByShipmentId(shipmentId.get());
+            shipment.setCreatedOn(priorShipment.getCreatedOn());
+            shipment.setId(priorShipment.getId());
+            shipment.setVersion(priorShipment.getVersion());
+
+            Set<ProductLot> priorLots = priorShipment.getProductLots();
+
+            updateProductInventoryOnExistingShipment(currentLots, priorLots, shipmentType, productService);
+
+        } else {
+            updateProductInventoryOnNewShipment(currentLots, shipmentType, productService);
+        }
+
+        shipment.updateTimeStamps();
+
+        return shipmentConverter.convert(shipmentRepository.save(shipment));
     }
 
     @Override
