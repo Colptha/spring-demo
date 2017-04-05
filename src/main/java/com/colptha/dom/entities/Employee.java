@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 @Entity
 public class Employee extends AbstractEntityObject {
 
-
     private String firstName;
     private String lastName;
     private String employeeId;

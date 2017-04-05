@@ -1,19 +1,16 @@
 package com.colptha.dom.command;
 
-import com.colptha.dom.enums.ProductId;
-import com.colptha.dom.enums.ShipmentType;
+import com.colptha.dom.entities.ProductLot;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by Colptha on 4/1/17.
+ * Created by Colptha on 4/4/17.
  */
-public class ShipmentForm extends AbstractCommandObject {
-
+public class ShipmentForm extends AbstractCommandObject{
     private Integer shipmentId;
-    private ShipmentType shipmentType;
-    private Map<ProductId, Integer> productIdToQuantityMap = new HashMap<>();
+    private Set<ProductLot> productLots = new HashSet<>();
 
     public Integer getShipmentId() {
         return shipmentId;
@@ -23,19 +20,11 @@ public class ShipmentForm extends AbstractCommandObject {
         this.shipmentId = shipmentId;
     }
 
-    public ShipmentType getShipmentType() {
-        return shipmentType;
+    public Set<ProductLot> getProductLots() {
+        return productLots;
     }
 
-    public void setShipmentType(ShipmentType shipmentType) {
-        this.shipmentType = shipmentType;
-    }
-
-    public Map<ProductId, Integer> getProductIdToQuantityMap() {
-        return productIdToQuantityMap;
-    }
-
-    public void setProductIdToQuantityMap(Map<ProductId, Integer> productIdToQuantityMap) {
-        this.productIdToQuantityMap = productIdToQuantityMap;
+    public void setProductLots(Set<ProductLot> productLots) {
+        this.productLots = productLots;
     }
 }

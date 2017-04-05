@@ -12,7 +12,7 @@ public class ProductForm extends AbstractCommandObject {
     private ProductId productId;
     private String productName;
     private BigDecimal productPrice;
-    private Integer quantityInStock;
+    private Integer inventory;
 
     public ProductId getProductId() {
         return productId;
@@ -38,11 +38,11 @@ public class ProductForm extends AbstractCommandObject {
         this.productPrice = productPrice;
     }
 
-    public Integer getQuantityInStock() {
-        return quantityInStock;
+    public Integer getInventory() {
+        return inventory;
     }
 
-    public void setQuantityInStock(Integer quantityInStock) {
-        this.quantityInStock = quantityInStock;
+    public void setInventory(Integer inventory) {
+        this.inventory = inventory;
     }
 }

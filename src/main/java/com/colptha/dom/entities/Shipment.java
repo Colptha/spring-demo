@@ -1,21 +1,23 @@
 package com.colptha.dom.entities;
 
-import com.colptha.dom.enums.ProductId;
-import com.colptha.dom.enums.ShipmentType;
-
+import javax.persistence.CollectionTable;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import java.util.HashMap;
-import java.util.Map;
+import javax.persistence.JoinColumn;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
- * Created by Colptha on 4/1/17.
+ * Created by Colptha on 4/4/17.
  */
 @Entity
 public class Shipment extends AbstractEntityObject {
 
     private Integer shipmentId;
-    private ShipmentType shipmentType;
-    private Map<ProductId, Integer> productIdToQuantityMap = new HashMap<>();
+
+    @ElementCollection
+    @CollectionTable(name = "PRODUCT_LOT", joinColumns = @JoinColumn(name = "shipment_id"))
+    private Set<ProductLot> productLots = new HashSet<>();
 
     public Integer getShipmentId() {
         return shipmentId;
@@ -25,19 +27,11 @@ public class Shipment extends AbstractEntityObject {
         this.shipmentId = shipmentId;
     }
 
-    public ShipmentType getShipmentType() {
-        return shipmentType;
+    public Set<ProductLot> getProductLots() {
+        return productLots;
     }
 
-    public void setShipmentType(ShipmentType shipmentType) {
-        this.shipmentType = shipmentType;
-    }
-
-    public Map<ProductId, Integer> getProductIdToQuantityMap() {
-        return productIdToQuantityMap;
-    }
-
-    public void setProductIdToQuantityMap(Map<ProductId, Integer> productIdToQuantityMap) {
-        this.productIdToQuantityMap = productIdToQuantityMap;
+    public void setProductLots(Set<ProductLot> productLots) {
+        this.productLots = productLots;
     }
 }

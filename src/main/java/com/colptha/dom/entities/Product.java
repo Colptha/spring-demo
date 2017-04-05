@@ -14,7 +14,7 @@ public class Product extends AbstractEntityObject {
     private ProductId productId;
     private String productName;
     private BigDecimal productPrice;
-    private Integer quantityInStock;
+    private Integer inventory = 0;
 
     public ProductId getProductId() {
         return productId;
@@ -40,11 +40,18 @@ public class Product extends AbstractEntityObject {
         this.productPrice = productPrice;
     }
 
-    public Integer getQuantityInStock() {
-        return quantityInStock;
+    public Integer getInventory() {
+        return inventory;
     }
 
-    public void setQuantityInStock(Integer quantityInStock) {
-        this.quantityInStock = quantityInStock;
+    public void setInventory(Integer inventory) {
+        this.inventory = inventory;
+    }
+
+    public void adjustInventory(Integer quantity) throws Exception {
+        if (this.getInventory() + quantity < 0) {
+            throw new Exception("Inventory cannot be negative");
+        }
+        this.inventory += quantity;
     }
 }

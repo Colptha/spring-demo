@@ -6,7 +6,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
 /**
- * Created by Colptha on 4/1/17.
+ * Created by Colptha on 4/4/17.
  */
 @Component
 public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
@@ -14,21 +14,18 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
     @Override
     public ShipmentForm convert(Shipment shipment) {
         ShipmentForm shipmentForm = new ShipmentForm();
-        shipmentForm.setUpdatedOn(shipment.getUpdatedOn());
-        shipmentForm.setCreatedOn(shipment.getCreatedOn());
-        shipmentForm.setProductIdToQuantityMap(shipment.getProductIdToQuantityMap());
         shipmentForm.setShipmentId(shipment.getShipmentId());
-        shipmentForm.setShipmentType(shipment.getShipmentType());
+        shipmentForm.setCreatedOn(shipment.getCreatedOn());
+        shipmentForm.setUpdatedOn(shipment.getUpdatedOn());
+        shipmentForm.setProductLots(shipment.getProductLots());
 
         return shipmentForm;
     }
 
     public Shipment convert(ShipmentForm shipmentForm) {
         Shipment shipment = new Shipment();
-        // dates will be set on the way into the database
-        shipment.setProductIdToQuantityMap(shipmentForm.getProductIdToQuantityMap());
+        shipment.setProductLots(shipmentForm.getProductLots());
         shipment.setShipmentId(shipmentForm.getShipmentId());
-        shipment.setShipmentType(shipmentForm.getShipmentType());
 
         return shipment;
     }

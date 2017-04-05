@@ -13,5 +13,5 @@ public interface CRUDService<Form, QueryParam> {
 
     Form saveOrUpdate(Form form);
 
-    Form delete(QueryParam query);
+    void delete(QueryParam query);
 }

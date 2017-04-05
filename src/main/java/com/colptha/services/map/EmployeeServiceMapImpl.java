@@ -58,8 +58,8 @@ public class EmployeeServiceMapImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeForm delete(String employeeCode) {
-        return employeeConverter.convert(employees.remove(employeeCode));
+    public void delete(String employeeCode) {
+        employeeConverter.convert(employees.remove(employeeCode));
     }
 
 }

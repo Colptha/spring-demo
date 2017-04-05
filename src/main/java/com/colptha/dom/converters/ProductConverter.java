@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ProductConverter implements Converter<Product, ProductForm> {
+
     @Override
     public ProductForm convert(Product product) {
         ProductForm productForm = new ProductForm();
@@ -18,7 +19,7 @@ public class ProductConverter implements Converter<Product, ProductForm> {
         productForm.setProductId(product.getProductId());
         productForm.setProductName(product.getProductName());
         productForm.setProductPrice(product.getProductPrice());
-        productForm.setQuantityInStock(product.getQuantityInStock());
+        productForm.setInventory(product.getInventory());
 
         return productForm;
     }
@@ -29,7 +30,7 @@ public class ProductConverter implements Converter<Product, ProductForm> {
         product.setProductId(productForm.getProductId());
         product.setProductName(productForm.getProductName());
         product.setProductPrice(productForm.getProductPrice());
-        product.setQuantityInStock(productForm.getQuantityInStock());
+
 
         return product;
     }

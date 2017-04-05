@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Created by Colptha on 4/1/17.
@@ -46,9 +47,11 @@ public class ProductServiceMapImpl implements ProductService {
         Product product = productConverter.convert(productForm);
         ProductId productId = product.getProductId();
 
+        Optional<Product> oldProduct = Optional.ofNullable(products.get(productId));
         // check for and add creation date
-        if (products.containsKey(productId)) {
-            product.setCreatedOn(products.get(productId).getCreatedOn());
+        if (oldProduct.isPresent()) {
+            product.setCreatedOn(oldProduct.get().getCreatedOn());
+            product.setInventory(oldProduct.get().getInventory());
         }
 
         // normally Hibernate would update time stamps
@@ -59,8 +62,13 @@ public class ProductServiceMapImpl implements ProductService {
         return productConverter.convert(product);
     }
 
+    public void updateInventory(ProductId productId, Integer quantity) throws Exception {
+        products.get(productId).adjustInventory(quantity);
+    }
+
+
     @Override
-    public ProductForm delete(ProductId query) {
-        return productConverter.convert(products.remove(query));
+    public void delete(ProductId query) {
+        productConverter.convert(products.remove(query));
     }
 }
