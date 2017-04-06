@@ -75,55 +75,189 @@ public class ShipmentServiceMapImplTest {
 
     @Test
     public void testUpdate() throws Exception {
-        Integer shipmentId = 1;
-        ShipmentForm shipmentForm = shipmentService.findOne(shipmentId);
-        assert shipmentForm != null;
-        Set<ProductLot> productLotSet = shipmentForm.getProductLots();
-        assert productLotSet != null;
+        ProductId firstProductId = ProductId.A4;
+        ProductId secondProductId = ProductId.A5;
+        ProductId thirdProductId = ProductId.C2;
+        ProductId fourthProductId = ProductId.C4;
+        Integer firstQuantity = 125;
+        Integer secondQuantity = 375;
+        Integer thirdQuantity = 50;
+        Integer changedQuantity = 25;
 
-        ProductId productId = ((ProductLot) productLotSet.toArray()[0]).getProductId();
-        Integer productInventory = productService.findOne(productId).getInventory();
-        Integer oldProductLotInventory = ((ProductLot) productLotSet.toArray()[0]).getQuantity();
-        assert oldProductLotInventory != 200;
-        Integer newProductLotInventory = 200;
-        Integer discrepancy = newProductLotInventory - oldProductLotInventory;
+        ShipmentForm shipmentForm = new ShipmentForm();
 
-        ProductLot newProductLot = new ProductLot();
-        newProductLot.setProductId(productId);
-        newProductLot.setQuantity(newProductLotInventory);
+        ProductLot productLot1 = new ProductLot();
+        productLot1.setProductId(firstProductId);
+        productLot1.setQuantity(firstQuantity);
+
+        ProductLot productLot2 = new ProductLot();
+        productLot2.setProductId(secondProductId);
+        productLot2.setQuantity(secondQuantity);
+
+        ProductLot productLot3 = new ProductLot();
+        productLot3.setProductId(thirdProductId);
+        productLot3.setQuantity(thirdQuantity);
+
+        Set<ProductLot> productLotSet = new HashSet<>();
+        productLotSet.add(productLot1);
+        productLotSet.add(productLot2);
+        productLotSet.add(productLot3);
+
+        shipmentForm.setShipmentType(ShipmentType.INBOUND);
+        shipmentForm.setProductLots(productLotSet);
+
+        Integer preSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
+        Integer preSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
+        Integer preSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
+        Integer preSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        System.out.println("#####################");
+        System.out.println("Presave first product: " + preSaveQuantityOnFirstProductId);
+        System.out.println("Adding... " + firstQuantity);
+        System.out.println("Presave second product: " + preSaveQuantityOnSecondProductId);
+        System.out.println("Adding... " + secondQuantity);
+        System.out.println("Presave third product: " + preSaveQuantityOnThirdProductId);
+        System.out.println("Adding... " + thirdQuantity);
+        System.out.println("Presave fourth product: " + preSaveQuantityOnFourthProductId);
+        System.out.println("No changes made.");
+        System.out.println("#####################");
+
+        ShipmentForm savedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
+
+        Integer postSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
+        Integer postSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
+        Integer postSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
+        Integer postSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+
+        System.out.println("#####################");
+        System.out.println("Postsave first product: " + postSaveQuantityOnFirstProductId);
+        System.out.println("Should be: " + (firstQuantity + preSaveQuantityOnFirstProductId));
+        System.out.println("Postsave second product: " + postSaveQuantityOnSecondProductId);
+        System.out.println("Should be: " + (secondQuantity + preSaveQuantityOnSecondProductId));
+        System.out.println("Postsave third product: " + postSaveQuantityOnThirdProductId);
+        System.out.println("Should be: " + (thirdQuantity + preSaveQuantityOnThirdProductId));
+        System.out.println("Postsave fourth product: " + postSaveQuantityOnFourthProductId);
+        System.out.println("Should be: " + preSaveQuantityOnFourthProductId);
+        System.out.println("#####################");
+
+        assert savedShipmentForm.getShipmentId() != null;
+        assert postSaveQuantityOnFirstProductId
+                .equals(preSaveQuantityOnFirstProductId + firstQuantity);
+        assert postSaveQuantityOnSecondProductId
+                .equals(preSaveQuantityOnSecondProductId + secondQuantity);
+
+        // same productId but changing quantity
+        ProductLot productLot4 = new ProductLot();
+        productLot4.setProductId(firstProductId);
+        productLot4.setQuantity(changedQuantity);
+
+        // same quantity but changing productId
+        ProductLot productLot5 = new ProductLot();
+        productLot5.setProductId(fourthProductId);
+        productLot5.setQuantity(secondQuantity);
+        // the 'missing lot' should be removed
+
         Set<ProductLot> newProductLotSet = new HashSet<>();
-        newProductLotSet.add(newProductLot);
+        newProductLotSet.add(productLot4);
+        newProductLotSet.add(productLot5);
+        savedShipmentForm.setProductLots(newProductLotSet);
 
-        shipmentForm.setProductLots(newProductLotSet);
-        assert shipmentForm.getShipmentId().equals(shipmentId);
-        shipmentForm.setShipmentType(ShipmentType.OUTBOUND);
+        shipmentService.saveOrUpdate(savedShipmentForm);
 
-        ShipmentForm updatedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
+        Integer postUpdateSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
+        Integer postUpdateSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
+        Integer postUpdateSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
+        Integer postUpdateSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
 
-        System.out.println("productInventory before update: " + productInventory);
-        System.out.println("oldProductLotInventory: " + oldProductLotInventory);
-        System.out.println("newProductLotInventory: " + newProductLotInventory);
-        System.out.println("discrepancy: " + discrepancy);
-        System.out.println("actual data after update: " + productService.findOne(productId).getInventory());
-// TODO: fix this
-//        productInventory before update: 525
-//        oldProductLotInventory: 525
-//        newProductLotInventory: 200
-//        discrepancy: -325
-//        actual data after update: 850
+        System.out.println("#####################");
+        System.out.println("PostUpdate first product: " + postUpdateSaveQuantityOnFirstProductId);
+        System.out.println("Should be: " + (preSaveQuantityOnFirstProductId + changedQuantity));
+        System.out.println("PostUpdate second product: " + postUpdateSaveQuantityOnSecondProductId);
+        System.out.println("Should be: " + preSaveQuantityOnSecondProductId);
+        System.out.println("PostUpdate third product: " + postUpdateSaveQuantityOnThirdProductId);
+        System.out.println("Should be: " + preSaveQuantityOnThirdProductId);
+        System.out.println("PostUpdate fourth product: " + postUpdateSaveQuantityOnFourthProductId);
+        System.out.println("Should be: " + (secondQuantity + preSaveQuantityOnFourthProductId));
+        System.out.println("#####################");
 
-        assert productService.findOne(productId).getInventory() == productInventory - discrepancy;
-        assert updatedShipmentForm.getProductLots() != null;
-        assert updatedShipmentForm.getShipmentId().equals(shipmentId);
-        assert updatedShipmentForm.getUpdatedOn() != shipmentForm.getUpdatedOn();
-        assert updatedShipmentForm.getUpdatedOn() != null;
-        assert updatedShipmentForm.getCreatedOn() != shipmentForm.getUpdatedOn();
+        assert postUpdateSaveQuantityOnFirstProductId
+                .equals(preSaveQuantityOnFirstProductId + changedQuantity);
+        assert postUpdateSaveQuantityOnSecondProductId
+                .equals(preSaveQuantityOnSecondProductId);
+        assert postUpdateSaveQuantityOnThirdProductId
+                .equals(preSaveQuantityOnThirdProductId);
+        assert postUpdateSaveQuantityOnFourthProductId
+                .equals(secondQuantity + preSaveQuantityOnFourthProductId);
+        // test outbound to inbound
 
+        ProductLot outboundProductLot1 = new ProductLot();
+        outboundProductLot1.setProductId(firstProductId);
+        outboundProductLot1.setQuantity(changedQuantity);
+
+        ProductLot outboundProductLot2 = new ProductLot();
+        outboundProductLot2.setProductId(fourthProductId);
+        outboundProductLot2.setQuantity(secondQuantity);
+
+        Set<ProductLot> outboundProductLotSet = new HashSet<>();
+        outboundProductLotSet.add(outboundProductLot1);
+        outboundProductLotSet.add(outboundProductLot2);
+
+        ShipmentForm outboundShipmentForm = new ShipmentForm();
+        outboundShipmentForm.setShipmentType(ShipmentType.OUTBOUND);
+        outboundShipmentForm.setProductLots(outboundProductLotSet);
+
+        ShipmentForm savedOutboundShipmentForm = shipmentService.saveOrUpdate(outboundShipmentForm);
+
+        Integer postOutboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
+        Integer postOutboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
+        Integer postOutboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
+        Integer postOutboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+
+        System.out.println("#####################");
+        System.out.println("PostOutbound first product: " + postOutboundSaveQuantityOnFirstProductId);
+        System.out.println("Should be: " + preSaveQuantityOnFirstProductId);
+        System.out.println("PostOutbound second product: " + postOutboundSaveQuantityOnSecondProductId);
+        System.out.println("Should be: " + preSaveQuantityOnSecondProductId);
+        System.out.println("PostOutbound third product: " + postOutboundSaveQuantityOnThirdProductId);
+        System.out.println("Should be: " + preSaveQuantityOnThirdProductId);
+        System.out.println("PostOutbound fourth product: " + postOutboundSaveQuantityOnFourthProductId);
+        System.out.println("Should be: " + preSaveQuantityOnFourthProductId);
+        System.out.println("#####################");
+
+        assert postOutboundSaveQuantityOnFirstProductId
+                .equals(preSaveQuantityOnFirstProductId);
+        assert postOutboundSaveQuantityOnFourthProductId
+                .equals(preSaveQuantityOnFourthProductId);
+
+        savedOutboundShipmentForm.setShipmentType(ShipmentType.INBOUND);
+
+        shipmentService.saveOrUpdate(savedOutboundShipmentForm);
+
+        Integer outboundToInboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
+        Integer outboundToInboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
+        Integer outboundToInboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
+        Integer outboundToInboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+
+        System.out.println("#####################");
+        System.out.println("PostOutbound first product: " + outboundToInboundSaveQuantityOnFirstProductId);
+        System.out.println("Should be: " + (preSaveQuantityOnFirstProductId + (changedQuantity * 2)));
+        System.out.println("PostOutbound second product: " + outboundToInboundSaveQuantityOnSecondProductId);
+        System.out.println("Should be: " + preSaveQuantityOnSecondProductId);
+        System.out.println("PostOutbound third product: " + outboundToInboundSaveQuantityOnThirdProductId);
+        System.out.println("Should be: " + preSaveQuantityOnThirdProductId);
+        System.out.println("PostOutbound fourth product: " + outboundToInboundSaveQuantityOnFourthProductId);
+        System.out.println("Should be: " + (preSaveQuantityOnFourthProductId + (secondQuantity * 2)));
+        System.out.println("#####################");
+
+        assert outboundToInboundSaveQuantityOnFirstProductId
+                .equals(preSaveQuantityOnFirstProductId + (changedQuantity * 2));
+        assert outboundToInboundSaveQuantityOnFourthProductId
+                .equals(preSaveQuantityOnFourthProductId + (secondQuantity * 2));
+        // need to do an inbound to an outbound
     }
 
     @Test
     public void testDelete() throws Exception {
-        assert shipmentService.findOne(1) != null;
+        assert shipmentService.findOne(2) != null;
         shipmentService.delete(2);
         Optional<ShipmentForm> shipmentForm = Optional.ofNullable(shipmentService.findOne(2));
         assert !shipmentForm.isPresent();

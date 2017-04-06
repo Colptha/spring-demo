@@ -54,22 +54,53 @@ public class ShipmentServiceMapImpl implements ShipmentService {
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
         Shipment shipment = shipmentConverter.convert(shipmentForm);
         ShipmentType shipmentType = shipment.getShipmentType();
-        Set<ProductLot> currentLots = shipment.getProductLots();
+
+        // assign incoming product lot information to new product lots so they are not
+        // pointing at the same object in memory if this is an update
+        Set<ProductLot> currentLots = new HashSet<>();
+        shipment.getProductLots().forEach(lot -> {
+            ProductLot productLot = new ProductLot();
+            productLot.setProductId(lot.getProductId());
+            productLot.setQuantity(lot.getQuantity());
+            currentLots.add(productLot);
+        });
+        shipment.setProductLots(currentLots);
 
         Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
+        Shipment priorShipment = null;
+        ShipmentType priorShipmentType = null;
+        if (shipmentId.isPresent()) {
+            priorShipment = shipmentMap.get(shipmentId.get());
+            priorShipmentType = priorShipment.getShipmentType();
+        }
+
+        final boolean ADJUSTMENT_NEEDED =
+                (priorShipmentType == null && shipmentType == ShipmentType.OUTBOUND) ||
+                (priorShipmentType == ShipmentType.OUTBOUND && shipmentType == ShipmentType.INBOUND) ||
+                (priorShipmentType == ShipmentType.INBOUND && shipmentType == ShipmentType.OUTBOUND);
+
+        //SCENARIOS
+        // 1. new inbound           comes in positive goes out positive - DONT ADJUST
+        // 2. new outbound          comes in positive goes out negative - ADJUST
+        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST but ShipmentType.INBOUND won't change it
+        // 4. inbound -> outbound   comes in positive goes out negative - ADJUST
+        // 5. outbound -> outbound  comes in negative goes out negative - DONT ADJUST
+        // 6. inbound -> inbound    comes in positive goes out positive - DONT ADJUST
+
+        if (ADJUSTMENT_NEEDED) {
+            currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.changeInventoryDirection()));
+        }
 
         if (shipmentId.isPresent()) {
-            Shipment priorShipment = shipmentMap.get(shipmentId.get());
             shipment.setCreatedOn(priorShipment.getCreatedOn());
             Set<ProductLot> priorLots = priorShipment.getProductLots();
 
             List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-            removeDeletedLots(lotsToRemoveByProductId, priorLots, shipmentType, productService);
-            updateProductInventoryOnModifiedLots(currentLots, priorLots, shipmentType, productService);
-
+            removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
+            updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
         } else {
             shipment.setShipmentId(getNextId());
-            updateProductInventoryOnNewShipment(currentLots, shipmentType, productService);
+            updateProductInventoryOnNewShipment(currentLots, productService);
         }
 
         shipment.updateTimeStamps();

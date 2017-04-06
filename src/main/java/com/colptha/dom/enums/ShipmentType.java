@@ -4,16 +4,14 @@ package com.colptha.dom.enums;
  * Created by Colptha on 4/5/17.
  */
 public enum ShipmentType {
-    INBOUND (1),
-    OUTBOUND (-1);
+    INBOUND,
+    OUTBOUND;
 
-    private final Integer inventoryDirection;
+    private final Integer changeInventoryDirection = -1;
 
-    ShipmentType(Integer inventoryDirection) {
-        this.inventoryDirection = inventoryDirection;
-    }
+    ShipmentType() {}
 
-    public Integer getInventoryDirection() {
-        return inventoryDirection;
+    public Integer changeInventoryDirection() {
+        return changeInventoryDirection;
     }
 }

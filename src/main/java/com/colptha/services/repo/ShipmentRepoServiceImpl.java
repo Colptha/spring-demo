@@ -58,6 +58,8 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
         Shipment shipment = shipmentConverter.convert(shipmentForm);
         ShipmentType shipmentType = shipment.getShipmentType();
         Set<ProductLot> currentLots = shipment.getProductLots();
+        // needs to be updated
+        //currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.getInventoryDirection()));
 
         Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
 
@@ -69,10 +71,10 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
 
             Set<ProductLot> priorLots = priorShipment.getProductLots();
 
-            updateProductInventoryOnExistingShipment(currentLots, priorLots, shipmentType, productService);
+            updateProductInventoryOnExistingShipment(currentLots, priorLots, productService);
 
         } else {
-            updateProductInventoryOnNewShipment(currentLots, shipmentType, productService);
+            updateProductInventoryOnNewShipment(currentLots, productService);
         }
 
         shipment.updateTimeStamps();
