@@ -3,6 +3,7 @@ package com.colptha.services;
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
+import com.colptha.dom.enums.ShipmentType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +46,12 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
     default List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
         List<ProductId> oldProductIdList = new ArrayList<>();
         priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
+
         List<ProductId> newProductIdList = new ArrayList<>();
         currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
+
         oldProductIdList.removeAll(newProductIdList);
+
         return oldProductIdList;
     }
 
@@ -87,5 +91,27 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
                 e.printStackTrace();
             }
         });
+    }
+
+    default void adjustInventoryDirection(ShipmentType shipmentType,
+                                          ShipmentType priorShipmentType,
+                                          Set<ProductLot> currentLots) {
+
+        final boolean ADJUSTMENT_NEEDED =
+                (priorShipmentType == null && shipmentType == ShipmentType.OUTBOUND) ||
+                        (priorShipmentType == ShipmentType.OUTBOUND && shipmentType == ShipmentType.INBOUND) ||
+                        (priorShipmentType == ShipmentType.INBOUND && shipmentType == ShipmentType.OUTBOUND);
+
+        //SCENARIOS
+        // 1. new inbound           comes in positive goes out positive - DONT ADJUST
+        // 2. new outbound          comes in positive goes out negative - ADJUST
+        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST but ShipmentType.INBOUND won't change it
+        // 4. inbound -> outbound   comes in positive goes out negative - ADJUST
+        // 5. outbound -> outbound  comes in negative goes out negative - DONT ADJUST
+        // 6. inbound -> inbound    comes in positive goes out positive - DONT ADJUST
+
+        if (ADJUSTMENT_NEEDED) {
+            currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.changeInventoryDirection()));
+        }
     }
 }

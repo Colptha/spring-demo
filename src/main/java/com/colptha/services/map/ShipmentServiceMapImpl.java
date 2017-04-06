@@ -74,22 +74,7 @@ public class ShipmentServiceMapImpl implements ShipmentService {
             priorShipmentType = priorShipment.getShipmentType();
         }
 
-        final boolean ADJUSTMENT_NEEDED =
-                (priorShipmentType == null && shipmentType == ShipmentType.OUTBOUND) ||
-                (priorShipmentType == ShipmentType.OUTBOUND && shipmentType == ShipmentType.INBOUND) ||
-                (priorShipmentType == ShipmentType.INBOUND && shipmentType == ShipmentType.OUTBOUND);
-
-        //SCENARIOS
-        // 1. new inbound           comes in positive goes out positive - DONT ADJUST
-        // 2. new outbound          comes in positive goes out negative - ADJUST
-        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST but ShipmentType.INBOUND won't change it
-        // 4. inbound -> outbound   comes in positive goes out negative - ADJUST
-        // 5. outbound -> outbound  comes in negative goes out negative - DONT ADJUST
-        // 6. inbound -> inbound    comes in positive goes out positive - DONT ADJUST
-
-        if (ADJUSTMENT_NEEDED) {
-            currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.changeInventoryDirection()));
-        }
+        adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
 
         if (shipmentId.isPresent()) {
             shipment.setCreatedOn(priorShipment.getCreatedOn());

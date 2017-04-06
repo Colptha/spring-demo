@@ -50,31 +50,7 @@ public class ShipmentServiceMapImplTest {
     }
 
     @Test
-    public void testSave() throws Exception {
-        ProductId productId = ProductId.A1;
-        Integer amountAdded = 100;
-
-        ProductLot productLot = new ProductLot();
-        productLot.setProductId(productId);
-        productLot.setQuantity(amountAdded);
-
-        Integer productQuantity = productService.findOne(productId).getInventory();
-
-        ShipmentForm shipmentForm = new ShipmentForm();
-        shipmentForm.setShipmentType(ShipmentType.INBOUND);
-        shipmentForm.getProductLots().add(productLot);
-
-        ShipmentForm savedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
-
-        assert savedShipmentForm.getProductLots().equals(shipmentForm.getProductLots());
-        assert savedShipmentForm.getShipmentId() != null;
-        assert savedShipmentForm.getCreatedOn() != null;
-        assert savedShipmentForm.getUpdatedOn() != null;
-        assert productService.findOne(productId).getInventory() == productQuantity + amountAdded;
-    }
-
-    @Test
-    public void testUpdate() throws Exception {
+    public void testSaveAndUpdate() throws Exception {
         ProductId firstProductId = ProductId.A4;
         ProductId secondProductId = ProductId.A5;
         ProductId thirdProductId = ProductId.C2;
