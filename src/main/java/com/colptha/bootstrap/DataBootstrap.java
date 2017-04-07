@@ -212,7 +212,9 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
 
         ShipmentForm shipment2 = new ShipmentForm();
         shipment2.setShipmentType(ShipmentType.INBOUND);
-        shipment2.getProductLots().add(productLot);
+        Set<ProductLot> productLotSet2 = new HashSet<>();
+        productLotSet2.add(productLot);
+        shipment2.setProductLots(productLotSet2);
         shipmentService.saveOrUpdate(shipment2);
     }
 }

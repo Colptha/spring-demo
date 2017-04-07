@@ -19,15 +19,19 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
         shipmentForm.setUpdatedOn(shipment.getUpdatedOn());
         shipmentForm.setProductLots(shipment.getProductLots());
         shipmentForm.setShipmentType(shipment.getShipmentType());
+        shipmentForm.setVersion(shipment.getVersion());
 
         return shipmentForm;
     }
 
     public Shipment convert(ShipmentForm shipmentForm) {
         Shipment shipment = new Shipment();
+        // dates will be set on the way into the database
+        // database id will be obtained from db
         shipment.setProductLots(shipmentForm.getProductLots());
         shipment.setShipmentId(shipmentForm.getShipmentId());
         shipment.setShipmentType(shipmentForm.getShipmentType());
+        shipment.setVersion(shipmentForm.getVersion());
 
         return shipment;
     }

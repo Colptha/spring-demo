@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/product")
 public class ProductController {
+
     private ProductService productService;
 
     @Autowired
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
-    }
+    public void setProductService(ProductService productService) { this.productService = productService; }
 
     @RequestMapping("/")
     public String root() {
@@ -29,6 +28,7 @@ public class ProductController {
     @RequestMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("products", productService.listAll());
+
         return "product/all";
     }
 

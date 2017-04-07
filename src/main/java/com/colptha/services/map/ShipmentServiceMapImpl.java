@@ -52,61 +52,40 @@ public class ShipmentServiceMapImpl implements ShipmentService {
 
     @Override
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
-        Shipment shipment = shipmentConverter.convert(shipmentForm);
-        ShipmentType shipmentType = shipment.getShipmentType();
+        Shipment currentShipment = shipmentConverter.convert(shipmentForm);
 
-        // assign incoming product lot information to new product lots so they are not
-        // pointing at the same object in memory if this is an update
-        Set<ProductLot> currentLots = new HashSet<>();
-        shipment.getProductLots().forEach(lot -> {
+        /*
+        assign incoming product lot information to new product lot objects so they are not
+        pointing at the same object in memory if this is an update
+        not relevant to database implementations
+        */
+        Set<ProductLot> currentLots = new HashSet<>(); // start of map object reference fix
+        currentShipment.getProductLots().forEach(lot -> {
             ProductLot productLot = new ProductLot();
             productLot.setProductId(lot.getProductId());
             productLot.setQuantity(lot.getQuantity());
             currentLots.add(productLot);
         });
-        shipment.setProductLots(currentLots);
+        currentShipment.setProductLots(currentLots); // end of map object reference fix
 
-        Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
-        Shipment priorShipment = null;
-        ShipmentType priorShipmentType = null;
-        if (shipmentId.isPresent()) {
-            priorShipment = shipmentMap.get(shipmentId.get());
-            priorShipmentType = priorShipment.getShipmentType();
-        }
-
-        adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
+        Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
+        ShipmentForm priorShipment = null;
 
         if (shipmentId.isPresent()) {
-            shipment.setCreatedOn(priorShipment.getCreatedOn());
-            Set<ProductLot> priorLots = priorShipment.getProductLots();
-
-            List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-            removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
-            updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
-        } else {
-            shipment.setShipmentId(getNextId());
-            updateProductInventoryOnNewShipment(currentLots, productService);
+            priorShipment = shipmentConverter.convert(shipmentMap.get(shipmentId.get()));
         }
 
-        shipment.updateTimeStamps();
-        shipmentMap.put(shipment.getShipmentId(), shipment);
-        return shipmentConverter.convert(shipment);
+        processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
+
+        currentShipment.updateTimeStamps(); // map specific
+        shipmentMap.put(currentShipment.getShipmentId(), currentShipment); // map specific
+
+        return shipmentConverter.convert(currentShipment);
     }
 
     @Override
     public void delete(Integer shipmentId) {
         shipmentMap.remove(shipmentId);
     }
-
-    private Integer getNextId() {
-
-        if (shipmentMap.isEmpty()) {
-            return 1;
-        }
-
-        Integer largest = Collections.max(shipmentMap.keySet());
-        return largest + 1;
-    }
-
 
 }

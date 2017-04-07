@@ -11,7 +11,7 @@ public abstract class AbstractEntityObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    private Integer databaseId;
 
     @Version
     private Integer version;
@@ -19,12 +19,12 @@ public abstract class AbstractEntityObject {
     private Date createdOn;
     private Date updatedOn;
 
-    public Integer getId() {
-        return id;
+    public Integer getDatabaseId() {
+        return databaseId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setDatabaseId(Integer databaseId) {
+        this.databaseId = databaseId;
     }
 
     public Integer getVersion() {

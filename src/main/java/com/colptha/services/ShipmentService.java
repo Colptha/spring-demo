@@ -2,27 +2,57 @@ package com.colptha.services;
 
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.ProductLot;
+import com.colptha.dom.entities.Shipment;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.dom.enums.ShipmentType;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Colptha on 4/4/17.
  */
 public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
-    default void updateProductInventoryOnExistingShipment(Set<ProductLot> currentLots,
-                                        Set<ProductLot> priorLots,
-                                        ProductService productService) {
 
-        List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-        removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
-        updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
+    default void processShipmentProductLots(Optional<Integer> shipmentId,
+                                            Shipment currentShipment,
+                                            ShipmentForm priorShipment,
+                                            Set<ProductLot> currentLots,
+                                            ProductService productService) {
+
+        ShipmentType shipmentType = currentShipment.getShipmentType();
+
+        ShipmentType priorShipmentType = shipmentId.map(
+                ifStoredId -> priorShipment.getShipmentType())
+                .orElse(null);
+
+        adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
+
+        if (shipmentId.isPresent()) {
+            currentShipment.setCreatedOn(priorShipment.getCreatedOn());
+            Set<ProductLot> priorLots = priorShipment.getProductLots();
+
+            List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
+            removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
+            updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
+        } else {
+            currentShipment.setShipmentId(getNextId());
+            updateProductInventoryOnNewShipment(currentLots, productService);
+        }
     }
+
+    default List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
+        List<ProductId> oldProductIdList = new ArrayList<>();
+        priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
+
+        List<ProductId> newProductIdList = new ArrayList<>();
+        currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
+
+        oldProductIdList.removeAll(newProductIdList);
+
+        return oldProductIdList;
+    }
+
     default void removeDeletedLots(List<ProductId> oldProductIdList,
                                    Set<ProductLot> priorLots,
                                    ProductService productService) {
@@ -41,18 +71,6 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
                 }
             });
         }
-    }
-
-    default List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
-        List<ProductId> oldProductIdList = new ArrayList<>();
-        priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
-
-        List<ProductId> newProductIdList = new ArrayList<>();
-        currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
-
-        oldProductIdList.removeAll(newProductIdList);
-
-        return oldProductIdList;
     }
 
     default void updateProductInventoryOnModifiedLots(Set<ProductLot> currentLots,
@@ -105,7 +123,7 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
         //SCENARIOS
         // 1. new inbound           comes in positive goes out positive - DONT ADJUST
         // 2. new outbound          comes in positive goes out negative - ADJUST
-        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST but ShipmentType.INBOUND won't change it
+        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST
         // 4. inbound -> outbound   comes in positive goes out negative - ADJUST
         // 5. outbound -> outbound  comes in negative goes out negative - DONT ADJUST
         // 6. inbound -> inbound    comes in positive goes out positive - DONT ADJUST
@@ -113,5 +131,15 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
         if (ADJUSTMENT_NEEDED) {
             currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.changeInventoryDirection()));
         }
+    }
+
+    default Integer getNextId() {
+        Map<Integer, ShipmentForm> formMap = listAll();
+
+        if (formMap.isEmpty()) {
+            return 1;
+        }
+
+        return Collections.max(formMap.keySet()) + 1;
     }
 }

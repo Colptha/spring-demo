@@ -20,6 +20,7 @@ public class ProductConverter implements Converter<Product, ProductForm> {
         productForm.setProductName(product.getProductName());
         productForm.setProductPrice(product.getProductPrice());
         productForm.setInventory(product.getInventory());
+        productForm.setVersion(product.getVersion());
 
         return productForm;
     }
@@ -27,9 +28,11 @@ public class ProductConverter implements Converter<Product, ProductForm> {
     public Product convert(ProductForm productForm) {
         Product product = new Product();
         // dates will be set on the way into the database
+        // database id will be obtained from db
         product.setProductId(productForm.getProductId());
         product.setProductName(productForm.getProductName());
         product.setProductPrice(productForm.getProductPrice());
+        product.setVersion(productForm.getVersion());
 
 
         return product;

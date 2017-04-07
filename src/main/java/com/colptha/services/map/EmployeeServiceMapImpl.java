@@ -29,7 +29,9 @@ public class EmployeeServiceMapImpl implements EmployeeService {
     @Override
     public Map<String, EmployeeForm> listAll() {
         Map<String, EmployeeForm> employeeFormMap = new HashMap<>();
-        employees.forEach((s, employee) -> employeeFormMap.put(s, employeeConverter.convert(employee)));
+        employees.forEach(
+                (employeeId, employee) -> employeeFormMap.put(employeeId, employeeConverter.convert(employee)));
+
         return employeeFormMap;
     }
 

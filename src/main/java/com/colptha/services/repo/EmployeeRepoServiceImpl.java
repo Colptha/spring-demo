@@ -35,9 +35,8 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
     public Map<String, EmployeeForm> listAll() {
         Map<String, EmployeeForm> employeeFormMap = new HashMap<>();
 
-        employeeRepository.findAll().forEach(employee -> {
-            employeeFormMap.put(employee.getEmployeeId(), employeeConverter.convert(employee));
-        });
+        employeeRepository.findAll().forEach(
+                employee -> employeeFormMap.put(employee.getEmployeeId(), employeeConverter.convert(employee)));
 
         return employeeFormMap;
     }

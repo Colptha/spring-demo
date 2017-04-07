@@ -4,7 +4,6 @@ import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.converters.ShipmentConverter;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.entities.Shipment;
-import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import com.colptha.services.repo.interfaces.ShipmentRepository;
@@ -12,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.*;
 
 /**
@@ -42,9 +42,9 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     @Override
     public Map<Integer, ShipmentForm> listAll() {
         Map<Integer, ShipmentForm> shipmentFormMap = new HashMap<>();
-        shipmentRepository.findAll().forEach(shipment -> {
-            shipmentFormMap.put(shipment.getShipmentId(), shipmentConverter.convert(shipment));
-        });
+        shipmentRepository.findAll().forEach(
+                shipment -> shipmentFormMap.put(shipment.getShipmentId(), shipmentConverter.convert(shipment)));
+
         return shipmentFormMap;
     }
 
@@ -54,32 +54,22 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     }
 
     @Override
+    @Transactional
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
-        Shipment shipment = shipmentConverter.convert(shipmentForm);
-        ShipmentType shipmentType = shipment.getShipmentType();
-        Set<ProductLot> currentLots = shipment.getProductLots();
-        // needs to be updated
-        //currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.getInventoryDirection()));
+        Shipment currentShipment = shipmentConverter.convert(shipmentForm);
 
-        Optional<Integer> shipmentId = Optional.ofNullable(shipment.getShipmentId());
+        Set<ProductLot> currentLots = currentShipment.getProductLots();
+
+        Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
+        ShipmentForm priorShipment = null;
 
         if (shipmentId.isPresent()) {
-            Shipment priorShipment = shipmentRepository.findByShipmentId(shipmentId.get());
-            shipment.setCreatedOn(priorShipment.getCreatedOn());
-            shipment.setId(priorShipment.getId());
-            shipment.setVersion(priorShipment.getVersion());
-
-            Set<ProductLot> priorLots = priorShipment.getProductLots();
-
-            updateProductInventoryOnExistingShipment(currentLots, priorLots, productService);
-
-        } else {
-            updateProductInventoryOnNewShipment(currentLots, productService);
+            priorShipment = findOne(shipmentId.get());
         }
 
-        shipment.updateTimeStamps();
+        processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
 
-        return shipmentConverter.convert(shipmentRepository.save(shipment));
+        return shipmentConverter.convert(shipmentRepository.save(currentShipment));
     }
 
     @Override

@@ -19,15 +19,18 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         employeeForm.setEmployeeId(employee.getEmployeeId());
         employeeForm.setCreatedOn(employee.getCreatedOn());
         employeeForm.setUpdatedOn(employee.getUpdatedOn());
+        employeeForm.setVersion(employee.getVersion());
         return employeeForm;
     }
 
     public Employee convert(EmployeeForm employeeForm) {
         Employee employee = new Employee();
         // dates will be set on the way into the database
+        // database id will be obtained from db
         employee.setLastName(employeeForm.getLastName());
         employee.setFirstName(employeeForm.getFirstName());
         employee.setEmployeeId(employeeForm.getEmployeeId());
+        employee.setVersion(employeeForm.getVersion());
         return employee;
     }
 

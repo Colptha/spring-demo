@@ -54,12 +54,15 @@ public class ProductServiceMapImpl implements ProductService {
             product.setInventory(oldProduct.get().getInventory());
         }
 
-        // normally Hibernate would update time stamps
-        product.updateTimeStamps();
-        products.put(productId, product);
+        product.updateTimeStamps(); // map specific
+        products.put(productId, product); // map specific
 
-        // send back with valid timestamps
         return productConverter.convert(product);
+    }
+
+    @Override
+    public ProductForm saveOrUpdate(Product product) {
+        return saveOrUpdate(productConverter.convert(product));
     }
 
     public void updateInventory(ProductId productId, Integer quantity) throws Exception {

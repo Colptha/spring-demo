@@ -4,6 +4,7 @@ import com.colptha.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -26,8 +27,16 @@ public class EmployeeController {
     }
 
     @RequestMapping("/all")
-    public String all(Model model) {
+    public String listAll(Model model) {
         model.addAttribute("employees", employeeService.listAll());
-        return "/employee/all";
+
+        return "employee/all";
+    }
+
+    @RequestMapping("/show/{id}")
+    public String showOne(@PathVariable String id, Model model) {
+        model.addAttribute("employee", employeeService.findOne(id));
+
+        return "employee/show";
     }
 }

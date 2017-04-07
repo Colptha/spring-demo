@@ -228,7 +228,6 @@ public class ShipmentServiceMapImplTest {
                 .equals(preSaveQuantityOnFirstProductId + (changedQuantity * 2));
         assert outboundToInboundSaveQuantityOnFourthProductId
                 .equals(preSaveQuantityOnFourthProductId + (secondQuantity * 2));
-        // need to do an inbound to an outbound
     }
 
     @Test

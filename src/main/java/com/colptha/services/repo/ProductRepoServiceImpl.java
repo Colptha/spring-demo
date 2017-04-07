@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Created by Colptha on 4/4/17.
@@ -38,9 +39,8 @@ public class ProductRepoServiceImpl implements ProductService {
     public Map<ProductId, ProductForm> listAll() {
         Map<ProductId, ProductForm> productFormMap = new HashMap<>();
 
-        productRepository.findAll().forEach(product -> {
-            productFormMap.put(product.getProductId(), productConverter.convert(product));
-        });
+        productRepository.findAll().forEach(product ->
+                productFormMap.put(product.getProductId(), productConverter.convert(product)));
 
         return  productFormMap;
     }
@@ -52,14 +52,34 @@ public class ProductRepoServiceImpl implements ProductService {
 
     @Override
     public ProductForm saveOrUpdate(ProductForm productForm) {
-        return productConverter.convert(productRepository.save(productConverter.convert(productForm)));
+        // dates and inventories will be trashed during conversion
+        // -- for consistency of created on dates
+        // -- to force employees to fix incorrect shipments rather than modifying inventory
+        Product product = productConverter.convert(productForm);
+        ProductId productId = product.getProductId();
+
+        Optional<Product> oldProduct = Optional.ofNullable(productRepository.findByProductId(productId));
+        // check for and add creation date and inventory
+        if (oldProduct.isPresent()) {
+            product.setCreatedOn(oldProduct.get().getCreatedOn());
+            product.setInventory(oldProduct.get().getInventory());
+            product.setDatabaseId(oldProduct.get().getDatabaseId());
+        }
+
+        return productConverter.convert(productRepository.save(product));
+    }
+
+    @Override
+    public ProductForm saveOrUpdate(Product product) {
+        return productConverter.convert(productRepository.save(product));
     }
 
     @Override
     public void updateInventory(ProductId productId, Integer quantity) throws Exception {
         Product product = productRepository.findByProductId(productId);
         product.adjustInventory(quantity);
-        saveOrUpdate(productConverter.convert(product));
+//        must use saveOrUpdate(Product), if converted to ProductForm databaseId is lost and an extra record is created
+        saveOrUpdate(product);
     }
 
     @Override
