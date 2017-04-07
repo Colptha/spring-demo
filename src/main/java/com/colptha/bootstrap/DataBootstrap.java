@@ -185,36 +185,116 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private void loadShipments() {
+        int quantity100 = 100;
+
         ProductLot productLot1 = new ProductLot();
         productLot1.setProductId(ProductId.A1);
-        productLot1.setQuantity(453);
+        productLot1.setQuantity(quantity100);
 
         ProductLot productLot2 = new ProductLot();
-        productLot2.setProductId(ProductId.B3);
-        productLot2.setQuantity(525);
+        productLot2.setProductId(ProductId.A2);
+        productLot2.setQuantity(quantity100);
 
-        ShipmentForm shipment1 = new ShipmentForm();
-        shipment1.setShipmentType(ShipmentType.INBOUND);
+        ProductLot productLot3 = new ProductLot();
+        productLot3.setProductId(ProductId.A3);
+        productLot3.setQuantity(quantity100);
+
+        ProductLot productLot4 = new ProductLot();
+        productLot4.setProductId(ProductId.A4);
+        productLot4.setQuantity(quantity100);
+
+        ProductLot productLot5 = new ProductLot();
+        productLot5.setProductId(ProductId.A5);
+        productLot5.setQuantity(quantity100);
+
+        ProductLot productLot6 = new ProductLot();
+        productLot6.setProductId(ProductId.B1);
+        productLot6.setQuantity(quantity100);
+
+        ProductLot productLot7 = new ProductLot();
+        productLot7.setProductId(ProductId.B2);
+        productLot7.setQuantity(quantity100);
+
+        ProductLot productLot8 = new ProductLot();
+        productLot8.setProductId(ProductId.B3);
+        productLot8.setQuantity(quantity100);
+
+        ProductLot productLot9 = new ProductLot();
+        productLot9.setProductId(ProductId.B4);
+        productLot9.setQuantity(quantity100);
+
+        ProductLot productLot10 = new ProductLot();
+        productLot10.setProductId(ProductId.B5);
+        productLot10.setQuantity(quantity100);
+
+        ProductLot productLot11 = new ProductLot();
+        productLot11.setProductId(ProductId.C1);
+        productLot11.setQuantity(quantity100);
+
+        ProductLot productLot12 = new ProductLot();
+        productLot12.setProductId(ProductId.C2);
+        productLot12.setQuantity(quantity100);
+
+        ProductLot productLot13 = new ProductLot();
+        productLot13.setProductId(ProductId.C3);
+        productLot13.setQuantity(quantity100);
+
+        ProductLot productLot14 = new ProductLot();
+        productLot14.setProductId(ProductId.C4);
+        productLot14.setQuantity(quantity100);
+
+        ProductLot productLot15 = new ProductLot();
+        productLot15.setProductId(ProductId.C5);
+        productLot15.setQuantity(quantity100);
+
+        ProductLot productLot16 = new ProductLot();
+        productLot16.setProductId(ProductId.D1);
+        productLot16.setQuantity(quantity100);
+
+        ProductLot productLot17 = new ProductLot();
+        productLot17.setProductId(ProductId.D2);
+        productLot17.setQuantity(quantity100);
+
+        ProductLot productLot18 = new ProductLot();
+        productLot18.setProductId(ProductId.D3);
+        productLot18.setQuantity(quantity100);
+
+        ProductLot productLot19 = new ProductLot();
+        productLot19.setProductId(ProductId.D4);
+        productLot19.setQuantity(quantity100);
+
+        ProductLot productLot20 = new ProductLot();
+        productLot20.setProductId(ProductId.D5);
+        productLot20.setQuantity(quantity100);
+
         Set<ProductLot> productLotSet = new HashSet<>();
         productLotSet.add(productLot1);
         productLotSet.add(productLot2);
+        productLotSet.add(productLot3);
+        productLotSet.add(productLot4);
+        productLotSet.add(productLot5);
+        productLotSet.add(productLot6);
+        productLotSet.add(productLot7);
+        productLotSet.add(productLot8);
+        productLotSet.add(productLot9);
+        productLotSet.add(productLot10);
+        productLotSet.add(productLot11);
+        productLotSet.add(productLot12);
+        productLotSet.add(productLot13);
+        productLotSet.add(productLot14);
+        productLotSet.add(productLot15);
+        productLotSet.add(productLot16);
+        productLotSet.add(productLot17);
+        productLotSet.add(productLot18);
+        productLotSet.add(productLot19);
+        productLotSet.add(productLot20);
 
+
+        ShipmentForm shipment1 = new ShipmentForm();
+        shipment1.setShipmentType(ShipmentType.INBOUND);
         shipment1.setProductLots(productLotSet);
+
         shipmentService.saveOrUpdate(shipment1);
         System.out.println("################# load shipments");
-
-        ProductId productId = ProductId.A1;
-        Integer amountAdded = 100;
-
-        ProductLot productLot = new ProductLot();
-        productLot.setProductId(productId);
-        productLot.setQuantity(amountAdded);
-
-        ShipmentForm shipment2 = new ShipmentForm();
-        shipment2.setShipmentType(ShipmentType.INBOUND);
-        Set<ProductLot> productLotSet2 = new HashSet<>();
-        productLotSet2.add(productLot);
-        shipment2.setProductLots(productLotSet2);
-        shipmentService.saveOrUpdate(shipment2);
     }
 }

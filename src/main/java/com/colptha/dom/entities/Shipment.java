@@ -2,10 +2,7 @@ package com.colptha.dom.entities;
 
 import com.colptha.dom.enums.ShipmentType;
 
-import javax.persistence.CollectionTable;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +13,8 @@ import java.util.Set;
 public class Shipment extends AbstractEntityObject {
 
     private Integer shipmentId;
+
+    @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
 
     @ElementCollection
