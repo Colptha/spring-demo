@@ -13,6 +13,7 @@ public class ProductLot {
     private Integer quantity;
     private ProductId productId;
 
+
     public Integer getQuantity() {
         return quantity;
     }

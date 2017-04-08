@@ -70,14 +70,14 @@ public class ProductServiceRepoImplTest {
     public void testUpdateInventory() throws Exception {
         ProductId productId = ProductId.A1;
         ProductForm productForm = productService.findOne(productId);
-        Integer inventory = productForm.getInventory();
+        Integer inventory = productForm.getProductInventory();
         Integer addedInventory = 50;
 
         productService.updateInventory(productForm.getProductId(), addedInventory);
 
         ProductForm adjustedProductForm = productService.findOne(productId);
 
-        assert adjustedProductForm.getInventory() == inventory + addedInventory;
+        assert adjustedProductForm.getProductInventory() == inventory + addedInventory;
 
     }
 

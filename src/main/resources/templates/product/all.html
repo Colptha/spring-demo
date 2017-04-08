@@ -3,44 +3,60 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Warehouse | Products</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="../static/css/styles.css"/>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
 </head>
 <body>
+<div class="jumbotron">
+    <div class="container">
+        <a href="/index.html"><h1 id="warehouse">Warehouse Management Systems</h1></a>
+    </div>
+</div>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="jumbotron">Warehouse Management Systems</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="jumbotron">
-                Shipments
+            <h2 class="jumbotron identifier">
+                All Products
             </h2>
         </div>
     </div>
     <div class="row" th:if="${not #lists.isEmpty(products)}">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>Product</th>
-                <th>Price</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="product : ${products}">
-                <td th:text="${product.value.productName}">Product</td>
-                <td th:text="${product.value.productPrice}">Price</td>
-            </tr>
-            </tbody>
-        </table>
+        <div class="col-md-12">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">Product ID</th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Current Inventory</th>
+                    <th scope="col">Shipment Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="product : ${products}">
+                    <td th:text="${product.value.productId}">Product</td>
+                    <td th:text="${product.value.productName}">Price</td>
+                    <td th:text="${product.value.productInventory}">Price</td>
+                    <td>
+                        <a href="show.html" th:href="@{/product/show/} + ${product.value.productId}">
+                            <span class="view-me">View Shipments</span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row" th:if="${#lists.isEmpty(products)}">
+        <h2 class="identifier">There are currently no products to show</h2>
     </div>
     <div class="row">
-        <div class="col-md-12">
-            <h2 class="jumbotron">
-                <a href="/">Back to main</a>
-            </h2>
+        <div class="col-md-6">
+            <a href="/" class="my-button back-button"><h2>Back to main</h2></a>
+        </div>
+        <div class="col-md-6">
+            <a href="#warehouse" class="my-button back-button"><h2>Back to top</h2></a>
         </div>
     </div>
 </div>

@@ -2,8 +2,6 @@ package com.colptha.dom.command;
 
 import com.colptha.dom.enums.ProductId;
 
-import java.math.BigDecimal;
-
 /**
  * Created by Colptha on 4/1/17.
  */
@@ -11,8 +9,7 @@ public class ProductForm extends AbstractCommandObject {
 
     private ProductId productId;
     private String productName;
-    private BigDecimal productPrice;
-    private Integer inventory;
+    private Integer productInventory;
 
     public ProductId getProductId() {
         return productId;
@@ -30,19 +27,11 @@ public class ProductForm extends AbstractCommandObject {
         this.productName = productName;
     }
 
-    public BigDecimal getProductPrice() {
-        return productPrice;
+    public Integer getProductInventory() {
+        return productInventory;
     }
 
-    public void setProductPrice(BigDecimal productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public Integer getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Integer inventory) {
-        this.inventory = inventory;
+    public void setProductInventory(Integer productInventory) {
+        this.productInventory = productInventory;
     }
 }

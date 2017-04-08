@@ -3,7 +3,8 @@ package com.colptha.dom.entities;
 import com.colptha.dom.enums.ProductId;
 
 import javax.persistence.Entity;
-import java.math.BigDecimal;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 
 /**
  * Created by Colptha on 4/1/17.
@@ -11,10 +12,10 @@ import java.math.BigDecimal;
 @Entity
 public class Product extends AbstractEntityObject {
 
+    @Enumerated(EnumType.STRING)
     private ProductId productId;
     private String productName;
-    private BigDecimal productPrice;
-    private Integer inventory = 0;
+    private Integer productInventory = 0;
 
     public ProductId getProductId() {
         return productId;
@@ -32,26 +33,18 @@ public class Product extends AbstractEntityObject {
         this.productName = productName;
     }
 
-    public BigDecimal getProductPrice() {
-        return productPrice;
+    public Integer getProductInventory() {
+        return productInventory;
     }
 
-    public void setProductPrice(BigDecimal productPrice) {
-        this.productPrice = productPrice;
-    }
-
-    public Integer getInventory() {
-        return inventory;
-    }
-
-    public void setInventory(Integer inventory) {
-        this.inventory = inventory;
+    public void setProductInventory(Integer productInventory) {
+        this.productInventory = productInventory;
     }
 
     public void adjustInventory(Integer quantity) throws Exception {
-        if (this.getInventory() + quantity < 0) {
+        if (this.getProductInventory() + quantity < 0) {
             throw new Exception("Inventory cannot be negative");
         }
-        this.inventory += quantity;
+        this.productInventory += quantity;
     }
 }

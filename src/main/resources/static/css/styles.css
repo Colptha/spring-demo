@@ -1,0 +1,39 @@
+a {
+    color: inherit;
+    display: block;
+}
+a:hover {
+    color: #700;
+    text-decoration: none;
+}
+th {
+    color: #fff;
+    background-color: #333;
+}
+.view-me {
+    font-weight: bold;
+}
+.my-button {
+    background: #ddd;
+}
+.back-button {
+    padding: 25px;
+    text-align: center;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+.identifier {
+    text-align: center;
+}
+.manage-button {
+    padding: 20vh 0;
+    display: flex;
+    border-radius: 8px;
+    color: inherit;
+}
+.manage-button:hover {
+    background: #bbb;
+}
+.manage-button h1 {
+    margin: auto;
+}

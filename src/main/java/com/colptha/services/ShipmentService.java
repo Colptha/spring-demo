@@ -13,6 +13,7 @@ import java.util.*;
  */
 public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
+    List<ProductLot> listByProductId(ProductId productId);
 
     default void processShipmentProductLots(Optional<Integer> shipmentId,
                                             Shipment currentShipment,

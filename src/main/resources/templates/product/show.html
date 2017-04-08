@@ -2,9 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Warehouse | Products</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="../static/css/styles.css"/>
+    <title th:text="'Warehouse | Product ' + ${product.productId}">Warehouse | Product</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
 </head>
 <body>
 <div class="container">
@@ -25,23 +27,30 @@
             <div class="form-horizontal">
                 <div class="form-group">
                     <label class="col-md-2 control-label">
-                        Product:
+                        Product ID:
                     </label>
                     <div class="col-md-10">
-                        <p class="form-control-static" th:text="${product.productName}">Product Name</p>
+                        <p class="form-control-static" th:text="${product.productId}">Product Name</p>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-2 control-label">
-                        Price:
+                        Product:
                     </label>
                     <div class="col-md-10">
-                        <p class="form-control-static" th:text="${product.productPrice}">Product Price</p>
+                        <p class="form-control-static" th:text="${product.productName}">Product Price</p>
                     </div>
                 </div>
             </div>
         </div>
         <h2 th:text="${product.productName}">Product Name</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="jumbotron" th:each="lot : ${lots}" th:text="${lot.quantity}">
+                Text Here
+            </h2>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-12">

@@ -4,6 +4,7 @@ import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.converters.ShipmentConverter;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.entities.Shipment;
+import com.colptha.dom.enums.ProductId;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import com.colptha.services.repo.interfaces.ShipmentRepository;
@@ -46,6 +47,20 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
                 shipment -> shipmentFormMap.put(shipment.getShipmentId(), shipmentConverter.convert(shipment)));
 
         return shipmentFormMap;
+    }
+
+    @Override
+    public List<ProductLot> listByProductId(ProductId productId) {
+        List<ProductLot> productLotList = new ArrayList<>();
+        listAll().forEach((integer, shipmentForm) -> {
+            shipmentForm.getProductLots().forEach(productLot -> {
+                if (productLot.getProductId().equals(productId)) {
+                    productLotList.add(productLot);
+                }
+            });
+        });
+
+        return productLotList;
     }
 
     @Override

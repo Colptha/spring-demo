@@ -51,7 +51,7 @@ public class ProductServiceMapImpl implements ProductService {
         // check for and add creation date
         if (oldProduct.isPresent()) {
             product.setCreatedOn(oldProduct.get().getCreatedOn());
-            product.setInventory(oldProduct.get().getInventory());
+            product.setProductInventory(oldProduct.get().getProductInventory());
         }
 
         product.updateTimeStamps(); // map specific

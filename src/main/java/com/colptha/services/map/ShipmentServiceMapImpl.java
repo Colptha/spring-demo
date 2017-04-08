@@ -45,6 +45,20 @@ public class ShipmentServiceMapImpl implements ShipmentService {
     }
 
     @Override
+    public List<ProductLot> listByProductId(ProductId productId) {
+        List<ProductLot> productLotList = new ArrayList<>();
+        shipmentMap.forEach((integer, shipment) -> {
+            shipment.getProductLots().forEach(productLot -> {
+                if (productLot.getProductId().equals(productId)) {
+                    productLotList.add(productLot);
+                }
+            });
+        });
+
+        return productLotList;
+    }
+
+    @Override
     public ShipmentForm findOne(Integer shipmentId) throws NoSuchElementException {
         Optional<Shipment> shipment = Optional.ofNullable(shipmentMap.get(shipmentId));
         return shipment.map(shipment1 -> shipmentConverter.convert(shipment1)).orElse(null);

@@ -18,8 +18,7 @@ public class ProductConverter implements Converter<Product, ProductForm> {
         productForm.setCreatedOn(product.getCreatedOn());
         productForm.setProductId(product.getProductId());
         productForm.setProductName(product.getProductName());
-        productForm.setProductPrice(product.getProductPrice());
-        productForm.setInventory(product.getInventory());
+        productForm.setProductInventory(product.getProductInventory());
         productForm.setVersion(product.getVersion());
 
         return productForm;
@@ -31,7 +30,6 @@ public class ProductConverter implements Converter<Product, ProductForm> {
         // database id will be obtained from db
         product.setProductId(productForm.getProductId());
         product.setProductName(productForm.getProductName());
-        product.setProductPrice(productForm.getProductPrice());
         product.setVersion(productForm.getVersion());
 
 

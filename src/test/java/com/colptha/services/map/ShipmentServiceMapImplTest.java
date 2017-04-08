@@ -82,10 +82,10 @@ public class ShipmentServiceMapImplTest {
         shipmentForm.setShipmentType(ShipmentType.INBOUND);
         shipmentForm.setProductLots(productLotSet);
 
-        Integer preSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
-        Integer preSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
-        Integer preSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
-        Integer preSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        Integer preSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getProductInventory();
+        Integer preSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getProductInventory();
+        Integer preSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getProductInventory();
+        Integer preSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getProductInventory();
         System.out.println("#####################");
         System.out.println("Presave first product: " + preSaveQuantityOnFirstProductId);
         System.out.println("Adding... " + firstQuantity);
@@ -99,10 +99,10 @@ public class ShipmentServiceMapImplTest {
 
         ShipmentForm savedShipmentForm = shipmentService.saveOrUpdate(shipmentForm);
 
-        Integer postSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
-        Integer postSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
-        Integer postSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
-        Integer postSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        Integer postSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getProductInventory();
+        Integer postSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getProductInventory();
+        Integer postSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getProductInventory();
+        Integer postSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getProductInventory();
 
         System.out.println("#####################");
         System.out.println("Postsave first product: " + postSaveQuantityOnFirstProductId);
@@ -139,10 +139,10 @@ public class ShipmentServiceMapImplTest {
 
         shipmentService.saveOrUpdate(savedShipmentForm);
 
-        Integer postUpdateSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
-        Integer postUpdateSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
-        Integer postUpdateSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
-        Integer postUpdateSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        Integer postUpdateSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getProductInventory();
+        Integer postUpdateSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getProductInventory();
+        Integer postUpdateSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getProductInventory();
+        Integer postUpdateSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getProductInventory();
 
         System.out.println("#####################");
         System.out.println("PostUpdate first product: " + postUpdateSaveQuantityOnFirstProductId);
@@ -183,10 +183,10 @@ public class ShipmentServiceMapImplTest {
 
         ShipmentForm savedOutboundShipmentForm = shipmentService.saveOrUpdate(outboundShipmentForm);
 
-        Integer postOutboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
-        Integer postOutboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
-        Integer postOutboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
-        Integer postOutboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        Integer postOutboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getProductInventory();
+        Integer postOutboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getProductInventory();
+        Integer postOutboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getProductInventory();
+        Integer postOutboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getProductInventory();
 
         System.out.println("#####################");
         System.out.println("PostOutbound first product: " + postOutboundSaveQuantityOnFirstProductId);
@@ -208,10 +208,10 @@ public class ShipmentServiceMapImplTest {
 
         shipmentService.saveOrUpdate(savedOutboundShipmentForm);
 
-        Integer outboundToInboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getInventory();
-        Integer outboundToInboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getInventory();
-        Integer outboundToInboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getInventory();
-        Integer outboundToInboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getInventory();
+        Integer outboundToInboundSaveQuantityOnFirstProductId = productService.findOne(firstProductId).getProductInventory();
+        Integer outboundToInboundSaveQuantityOnSecondProductId = productService.findOne(secondProductId).getProductInventory();
+        Integer outboundToInboundSaveQuantityOnThirdProductId = productService.findOne(thirdProductId).getProductInventory();
+        Integer outboundToInboundSaveQuantityOnFourthProductId = productService.findOne(fourthProductId).getProductInventory();
 
         System.out.println("#####################");
         System.out.println("PostOutbound first product: " + outboundToInboundSaveQuantityOnFirstProductId);
