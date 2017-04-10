@@ -2,6 +2,7 @@ package com.colptha.services.repo;
 
 import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.converters.EmployeeConverter;
+import com.colptha.dom.entities.Employee;
 import com.colptha.services.EmployeeService;
 import com.colptha.services.repo.interfaces.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Created by Colptha on 4/4/17.
@@ -48,7 +50,17 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeForm saveOrUpdate(EmployeeForm employeeForm) {
-        return employeeConverter.convert(employeeRepository.save(employeeConverter.convert(employeeForm)));
+        Employee currentEmployee = employeeConverter.convert(employeeForm);
+
+        Optional<Employee> existingEmployee =
+                Optional.ofNullable(employeeRepository.findByEmployeeId(currentEmployee.getEmployeeId()));
+
+        existingEmployee.ifPresent(employee -> {
+            currentEmployee.setCreatedOn(employee.getCreatedOn());
+            currentEmployee.setDatabaseId(employee.getDatabaseId());
+        });
+
+        return employeeConverter.convert(employeeRepository.save(currentEmployee));
     }
 
     @Override

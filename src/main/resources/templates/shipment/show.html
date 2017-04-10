@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Warehouse | Shipment ' + ${shipment.shipmentId}">Warehouse | Shipment</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div class="jumbotron">
+    <div class="container">
+        <a href="/index.html"><h1>Warehouse Management Systems</h1></a>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="jumbotron" th:text="'Shipment #'+ ${shipment.shipmentId}">
+                Shipment
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Details</h2>
+
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-6 control-label">
+                        Shipment ID:
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-static" th:text="${shipment.shipmentId}">Shipment Id</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-6 control-label">
+                        Shipment Type:
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-static" th:text="${shipment.shipmentType}">Shipment Type</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-6 control-label">
+                        Updated On:
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-static" th:text="${shipment.updatedOn}">Updated On</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-6 control-label">
+                        Created On:
+                    </label>
+                    <div class="col-md-6">
+                        <p class="form-control-static" th:text="${shipment.createdOn}">Created On</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-8">
+
+            <h2>Product Lots</h2>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Inventory Change</th>
+                    <th>Updated On</th>
+                    <th>Product Details</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="productLot : ${shipment.productLots}">
+                    <td th:text="${productLot.productId}">Product ID</td>
+                    <td th:text="${productLot.quantity}">Quantity</td>
+                    <td th:text="${productLot.updatedOn}">Updated On</td>
+                    <td>
+                        <a href="show.html" th:href="@{/product/show/} + ${productLot.productId}">
+                            <span class="view-me">View This Product</span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a href="/" class="navigation-button my-button"><h1>Main Menu</h1></a>
+        </div>
+        <div class="col-md-6">
+            <a href="/shipment/all" class="navigation-button my-button"><h1>Shipments</h1></a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

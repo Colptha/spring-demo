@@ -44,4 +44,13 @@ public class Shipment extends AbstractEntityObject {
     public void setShipmentType(ShipmentType shipmentType) {
         this.shipmentType = shipmentType;
     }
+
+    @Override
+    public void updateTimeStamps() {
+        super.updateTimeStamps();
+        getProductLots().forEach(productLot -> {
+            productLot.updateTimeStamps();
+            productLot.setShipmentType(shipmentType);
+        });
+    }
 }

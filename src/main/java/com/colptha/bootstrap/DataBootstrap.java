@@ -165,6 +165,8 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
 
     private void loadShipments() {
         int quantity100 = 100;
+        int quantity75 = 75;
+        int quantity50 = 50;
 
         ProductLot productLot1 = new ProductLot();
         productLot1.setProductId(ProductId.A1);
@@ -246,6 +248,58 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         productLot20.setProductId(ProductId.D5);
         productLot20.setQuantity(quantity100);
 
+        ProductLot productLot21 = new ProductLot();
+        productLot21.setProductId(ProductId.A1);
+        productLot21.setQuantity(quantity75);
+
+        ProductLot productLot22 = new ProductLot();
+        productLot22.setProductId(ProductId.A2);
+        productLot22.setQuantity(quantity75);
+
+        ProductLot productLot23 = new ProductLot();
+        productLot23.setProductId(ProductId.A3);
+        productLot23.setQuantity(quantity50);
+
+        ProductLot productLot24 = new ProductLot();
+        productLot24.setProductId(ProductId.A3);
+        productLot24.setQuantity(quantity75);
+
+        ProductLot productLot25 = new ProductLot();
+        productLot25.setProductId(ProductId.A4);
+        productLot25.setQuantity(quantity75);
+
+        ProductLot productLot26 = new ProductLot();
+        productLot26.setProductId(ProductId.B2);
+        productLot26.setQuantity(quantity50);
+
+        ProductLot productLot27 = new ProductLot();
+        productLot27.setProductId(ProductId.B4);
+        productLot27.setQuantity(quantity50);
+
+        ProductLot productLot28 = new ProductLot();
+        productLot28.setProductId(ProductId.C5);
+        productLot28.setQuantity(quantity50);
+
+        ProductLot productLot29 = new ProductLot();
+        productLot29.setProductId(ProductId.D3);
+        productLot29.setQuantity(quantity50);
+
+        ProductLot productLot30 = new ProductLot();
+        productLot30.setProductId(ProductId.D2);
+        productLot30.setQuantity(quantity50);
+
+        ProductLot productLot31 = new ProductLot();
+        productLot31.setProductId(ProductId.D1);
+        productLot31.setQuantity(quantity75);
+
+        ProductLot productLot32 = new ProductLot();
+        productLot32.setProductId(ProductId.A1);
+        productLot32.setQuantity(quantity75);
+
+        ProductLot productLot33 = new ProductLot();
+        productLot33.setProductId(ProductId.A2);
+        productLot33.setQuantity(quantity100);
+
         Set<ProductLot> productLotSet = new HashSet<>();
         productLotSet.add(productLot1);
         productLotSet.add(productLot2);
@@ -268,12 +322,45 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         productLotSet.add(productLot19);
         productLotSet.add(productLot20);
 
-
         ShipmentForm shipment1 = new ShipmentForm();
         shipment1.setShipmentType(ShipmentType.INBOUND);
         shipment1.setProductLots(productLotSet);
 
+        ShipmentForm shipment2 = new ShipmentForm();
+        shipment2.setShipmentType(ShipmentType.INBOUND);
+        shipment2.getProductLots().add(productLot21);
+        shipment2.getProductLots().add(productLot22);
+        shipment2.getProductLots().add(productLot23);
+
+        ShipmentForm shipment3 = new ShipmentForm();
+        shipment3.getProductLots().add(productLot24);
+        shipment3.getProductLots().add(productLot25);
+        shipment3.getProductLots().add(productLot26);
+        shipment3.getProductLots().add(productLot27);
+        shipment3.getProductLots().add(productLot28);
+        shipment3.getProductLots().add(productLot29);
+        shipment3.getProductLots().add(productLot30);
+        shipment3.setShipmentType(ShipmentType.INBOUND);
+
+        ShipmentForm shipment4 = new ShipmentForm();
+        shipment4.getProductLots().add(productLot31);
+        shipment4.setShipmentType(ShipmentType.OUTBOUND);
+
+        ShipmentForm shipment5 = new ShipmentForm();
+        shipment5.getProductLots().add(productLot32);
+        shipment5.setShipmentType(ShipmentType.OUTBOUND);
+
+        ShipmentForm shipment6 = new ShipmentForm();
+        shipment6.getProductLots().add(productLot33);
+        shipment6.setShipmentType(ShipmentType.OUTBOUND);
+
         shipmentService.saveOrUpdate(shipment1);
+        shipmentService.saveOrUpdate(shipment2);
+        shipmentService.saveOrUpdate(shipment3);
+        shipmentService.saveOrUpdate(shipment4);
+        shipmentService.saveOrUpdate(shipment5);
+        shipmentService.saveOrUpdate(shipment6);
+
         System.out.println("################# load shipments");
     }
 }

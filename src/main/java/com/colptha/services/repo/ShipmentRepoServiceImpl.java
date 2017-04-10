@@ -50,17 +50,16 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     }
 
     @Override
-    public List<ProductLot> listByProductId(ProductId productId) {
-        List<ProductLot> productLotList = new ArrayList<>();
-        listAll().forEach((integer, shipmentForm) -> {
-            shipmentForm.getProductLots().forEach(productLot -> {
-                if (productLot.getProductId().equals(productId)) {
-                    productLotList.add(productLot);
-                }
-            });
-        });
+    public TreeMap<Integer, ProductLot> listByProductId(ProductId productId) {
+        TreeMap<Integer, ProductLot> shipmentFormTreeMap = new TreeMap<>();
 
-        return productLotList;
+        listAll().forEach((integer, shipmentForm) -> shipmentForm.getProductLots().forEach(productLot -> {
+            if (productLot.getProductId().equals(productId)) {
+                shipmentFormTreeMap.put(integer, productLot);
+            }
+        }));
+
+        return shipmentFormTreeMap;
     }
 
     @Override

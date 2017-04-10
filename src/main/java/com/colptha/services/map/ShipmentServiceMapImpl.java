@@ -45,15 +45,14 @@ public class ShipmentServiceMapImpl implements ShipmentService {
     }
 
     @Override
-    public List<ProductLot> listByProductId(ProductId productId) {
-        List<ProductLot> productLotList = new ArrayList<>();
-        shipmentMap.forEach((integer, shipment) -> {
-            shipment.getProductLots().forEach(productLot -> {
-                if (productLot.getProductId().equals(productId)) {
-                    productLotList.add(productLot);
-                }
-            });
-        });
+    public TreeMap<Integer, ProductLot> listByProductId(ProductId productId) {
+        TreeMap<Integer, ProductLot> productLotList = new TreeMap<>();
+
+        shipmentMap.forEach((integer, shipment) -> shipment.getProductLots().forEach(productLot -> {
+            if (productLot.getProductId().equals(productId)) {
+                productLotList.put(integer, productLot);
+            }
+        }));
 
         return productLotList;
     }

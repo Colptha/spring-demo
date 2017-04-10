@@ -34,7 +34,7 @@ public class EmployeeServiceRepoImplTest {
     @Test
     public void testListAll() throws Exception {
         Map<String, EmployeeForm> testList = employeeService.listAll();
-        assert testList.size() == 5;
+        assert testList.size() > 0;
     }
 
     @Test
@@ -59,6 +59,7 @@ public class EmployeeServiceRepoImplTest {
         EmployeeForm savedEmployee = employeeService.saveOrUpdate(employeeForm);
 
         Date createdOn = savedEmployee.getCreatedOn();
+        Date updatedOn = savedEmployee.getUpdatedOn();
 
         assert savedEmployee.getLastName().equals(lastName);
         assert savedEmployee.getFirstName().equals(firstName);
@@ -76,7 +77,13 @@ public class EmployeeServiceRepoImplTest {
         EmployeeForm reSavedEmployee = employeeService.saveOrUpdate(savedEmployee);
 
         assert reSavedEmployee.getFirstName().equals(newFirstName);
-        assert reSavedEmployee.getCreatedOn().equals(createdOn);
+        System.out.println("########");
+        System.out.println("Old created on: " + createdOn.getTime());
+        System.out.println("Old updated on: " + updatedOn.getTime());
+        System.out.println("New created on: " + reSavedEmployee.getCreatedOn().getTime());
+        System.out.println("New updated on: " + reSavedEmployee.getUpdatedOn().getTime());
+        System.out.println("########");
+        assert reSavedEmployee.getCreatedOn().getTime() == createdOn.getTime();
         assert reSavedEmployee.getUpdatedOn() != savedEmployee.getUpdatedOn();
     }
 
