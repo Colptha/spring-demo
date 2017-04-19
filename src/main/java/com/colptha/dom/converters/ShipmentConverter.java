@@ -32,6 +32,9 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
         shipment.setShipmentId(shipmentForm.getShipmentId());
         shipment.setShipmentType(shipmentForm.getShipmentType());
         shipment.setVersion(shipmentForm.getVersion());
+        if (shipment.getVersion() == null) {
+            shipment.setVersion(0);
+        }
 
         return shipment;
     }

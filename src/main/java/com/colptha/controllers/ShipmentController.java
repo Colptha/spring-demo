@@ -1,6 +1,7 @@
 package com.colptha.controllers;
 
 import com.colptha.dom.command.ShipmentForm;
+import com.colptha.dom.entities.ProductLot;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ public class ShipmentController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String saveShipment(@Valid ShipmentForm shipmentForm, BindingResult bindingResult) {
+
         if (bindingResult.hasErrors()) {
             return "shipment/form";
         }
@@ -66,7 +68,10 @@ public class ShipmentController {
 
     @RequestMapping("/edit/{id}")
     public String editShipment(@PathVariable Integer id, Model model) {
-        model.addAttribute("shipmentForm", shipmentService.findOne(id));
+        ShipmentForm shipmentForm = shipmentService.findOne(id);
+
+        model.addAttribute("shipmentForm", shipmentForm);
+        model.addAttribute("lots", shipmentService.listProductLotsByProductId(shipmentForm));
 
         return "shipment/form";
     }

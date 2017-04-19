@@ -23,6 +23,13 @@ public class ProductLot {
     @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
 
+    public ProductLot() {
+    }
+
+    public ProductLot(ProductId productId, Integer quantity) {
+        this.quantity = quantity;
+        this.productId = productId;
+    }
 
     public Integer getQuantity() {
         return quantity;

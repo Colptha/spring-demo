@@ -13,6 +13,7 @@ import java.util.Set;
 public class Shipment extends AbstractEntityObject {
 
     private Integer shipmentId;
+    private Integer version = 0;
 
     @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
@@ -43,6 +44,14 @@ public class Shipment extends AbstractEntityObject {
 
     public void setShipmentType(ShipmentType shipmentType) {
         this.shipmentType = shipmentType;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Override

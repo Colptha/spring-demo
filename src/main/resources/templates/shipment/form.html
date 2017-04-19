@@ -58,6 +58,45 @@
                             </div>
                         </div>
                     </fieldset>
+                    <fieldset>
+                        <table th:if="${lots != null}" class="table table-striped table-bordered">
+                            <caption>Previous Shipment Data</caption>
+                            <thead>
+                                <tr>
+                                    <th>Product ID</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="productLot : ${lots}">
+                                    <td th:text="${productLot.value.productId}">Product Id</td>
+                                    <td th:text="${productLot.value.quantity}">Quantity</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <table class="table table-striped table-bordered">
+                            <caption>New Shipment Data</caption>
+                            <thead>
+                            <tr>
+                                <th>Product ID</th>
+                                <th>Quantity</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="productLot, stat : *{possibleProductLots}">
+                                <input type="hidden" th:field="*{possibleProductLots[__${stat.index}__].productId}"/>
+                                <td th:text="${productLot.getProductId()}">Product Id
+                                </td>
+
+                                <td>
+                                    <input th:field="*{possibleProductLots[__${stat.index}__].quantity}"/>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+
+                    </fieldset>
                 </form>
             </div>
         </div>

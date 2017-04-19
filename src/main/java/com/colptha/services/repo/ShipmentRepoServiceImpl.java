@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.OptimisticLockException;
 import javax.transaction.Transactional;
 import java.util.*;
 
@@ -71,26 +72,30 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     @Transactional
     public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
         Shipment currentShipment = shipmentConverter.convert(shipmentForm);
+        Integer incomingVersion = currentShipment.getVersion();
 
-        Set<ProductLot> currentLots = currentShipment.getProductLots();
+        // assign the possibleProductLots to the currentShipment as the set to be inventoried
+        Set<ProductLot> currentLots = new HashSet<>();
+        shipmentForm.getPossibleProductLots().forEach(currentLots::add);
+        currentShipment.setProductLots(currentLots);
 
+        // has the shipment been saved before (ie acquired a shipmentId?)
         Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
         Shipment priorShipment = null;
 
+        // if so, get old data from db for comparison and to set db id and created date
         if (shipmentId.isPresent()) {
             priorShipment = shipmentRepository.findByShipmentId(shipmentId.get());
         }
 
+        processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
 
-
-        Integer versionModifier =
-                processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
-
-        Optional<Integer> version = Optional.ofNullable(currentShipment.getVersion());
-        version.ifPresent(integer -> currentShipment.setVersion(currentShipment.getVersion() + versionModifier));
-
-
-
+        if (shipmentId.isPresent()) {
+            if (!shipmentRepository.findByShipmentId(shipmentId.get()).getVersion().equals(incomingVersion)) {
+                throw new OptimisticLockException("Incoming shipment version no longer matches database shipment version");
+            }
+        }
+        currentShipment.setVersion(currentShipment.getVersion() + 1);
         return shipmentConverter.convert(shipmentRepository.save(currentShipment));
     }
 

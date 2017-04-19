@@ -2,6 +2,7 @@ package com.colptha.dom.entities;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.Version;
 
 /**
  * Created by Colptha on 3/31/17.
@@ -12,6 +13,9 @@ public class Employee extends AbstractEntityObject {
     private String firstName;
     private String lastName;
     private String employeeId;
+
+    @Version
+    private Integer version;
 
     @Embedded
     private Address address;
@@ -38,6 +42,14 @@ public class Employee extends AbstractEntityObject {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     public Address getAddress() {
