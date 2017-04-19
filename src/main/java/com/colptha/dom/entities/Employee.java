@@ -1,6 +1,6 @@
 package com.colptha.dom.entities;
 
-
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 
 /**
@@ -12,6 +12,9 @@ public class Employee extends AbstractEntityObject {
     private String firstName;
     private String lastName;
     private String employeeId;
+
+    @Embedded
+    private Address address;
 
     public String getFirstName() {
         return firstName;
@@ -35,5 +38,13 @@ public class Employee extends AbstractEntityObject {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

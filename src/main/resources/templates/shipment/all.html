@@ -9,11 +9,7 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <a href="/index.html"><h1 id="warehouse">Warehouse Management Systems</h1></a>
-    </div>
-</div>
+<header th:replace="fragments :: header"></header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -31,6 +27,7 @@
                     <th scope="col">Created</th>
                     <th scope="col">Updated</th>
                     <th scope="col">Shipment Details</th>
+                    <th scope="col">Edit Shipment</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -39,26 +36,27 @@
                     <td th:text="${shipment.value.createdOn}">Created On</td>
                     <td th:text="${shipment.value.updatedOn}">Updated On</td>
                     <td>
-                        <a href="show.html" th:href="@{/shipment/show/} + ${shipment.key}">
-                            <span class="view-me">View Details</span>
+                        <a th:href="@{/shipment/show/} + ${shipment.key}">
+                            <span class="view-me">View</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a th:href="@{/shipment/edit/} + ${shipment.key}">
+                            <span class="view-me">Edit</span>
                         </a>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <div class="new-item">
+                <a th:href="@{/shipment/new}" class="my-button">New Shipment</a>
+            </div>
         </div>
     </div>
     <div class="row" th:if="${#lists.isEmpty(shipments)}">
         <h2 class="identifier">There are currently no shipments to show</h2>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/" class="my-button navigation-button"><h2>Main Menu</h2></a>
-        </div>
-        <div class="col-md-6">
-            <a href="#warehouse" class="my-button navigation-button"><h2>Back to top</h2></a>
-        </div>
-    </div>
 </div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

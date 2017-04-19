@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Warehouse | Employees</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<div th:with="existingEmployee=${employeeForm.employeeId != null}">
+<header th:replace="fragments :: header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="jumbotron identifier">
+                Employee Form
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <dl th:if="${existingEmployee}">
+                <dt>Employee ID:</dt><!--
+                --><dd th:text="${employeeForm.employeeId}">ID</dd>
+                <dt>Last Updated:</dt><!--
+                --><dd th:text="${#dates.format(employeeForm.updatedOn, 'dd MMM yyyy')
+                + ' at ' + #dates.format(employeeForm.updatedOn, 'HH:mm')}"></dd>
+            </dl>
+            <form th:object="${employeeForm}" th:action="@{/employee}" method="post">
+                <input type="hidden" th:field="*{employeeId}" th:if="${existingEmployee}"/>
+                <input type="hidden" th:field="*{version}"    th:if="${existingEmployee}"/>
+                <fieldset>
+                    <dl>
+                        <dt th:if="${not existingEmployee}">
+                            <label for="employeeId">Employee ID</label>
+                        </dt><!--
+                        --><dd th:if="${not existingEmployee}">
+                            <input th:field="*{employeeId}" id="employeeId"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="firstName">First Name</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{firstName}" id="firstName"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="lastName">Last Name</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{lastName}" id="lastName"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="addressLine1">Address Line 1</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{address.line1}" id="addressLine1"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="addressLine2">Address Line 2</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{address.line2}" id="addressLine2"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="city">City</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{address.city}" id="city"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="state">State</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{address.state}" id="state"/>
+                        </dd><!--
+                        --><dt>
+                            <label for="zipcode">Zipcode</label>
+                        </dt><!--
+                        --><dd>
+                            <input th:field="*{address.zipcode}" id="zipcode"/>
+                        </dd>
+                    </dl>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="my-button" type="submit">Submit</button>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments :: footer"></footer>
+</div>
+</body>
+</html>

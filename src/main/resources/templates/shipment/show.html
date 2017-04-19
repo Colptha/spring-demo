@@ -9,16 +9,12 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <a href="/index.html"><h1>Warehouse Management Systems</h1></a>
-    </div>
-</div>
+<header th:replace="fragments :: header"></header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h2 class="jumbotron" th:text="'Shipment #'+ ${shipment.shipmentId}">
-                Shipment
+                <a th:href="@{/shipment/all}">Back to Shipments</a>
             </h2>
         </div>
     </div>
@@ -78,29 +74,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="productLot : ${shipment.productLots}">
-                    <td th:text="${productLot.productId}">Product ID</td>
-                    <td th:text="${productLot.quantity}">Quantity</td>
-                    <td th:text="${productLot.updatedOn}">Updated On</td>
+                <tr th:each="productLot : ${lots}">
+                    <td th:text="${productLot.value.productId}">Product ID</td>
+                    <td th:text="${productLot.value.quantity}">Quantity</td>
+                    <td th:text="${productLot.value.updatedOn}">Updated On</td>
                     <td>
-                        <a href="show.html" th:href="@{/product/show/} + ${productLot.productId}">
+                        <a href="show.html" th:href="@{/product/show/} + ${productLot.value.productId}">
                             <span class="view-me">View This Product</span>
                         </a>
                     </td>
                 </tr>
                 </tbody>
             </table>
-
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/" class="navigation-button my-button"><h1>Main Menu</h1></a>
-        </div>
-        <div class="col-md-6">
-            <a href="/shipment/all" class="navigation-button my-button"><h1>Shipments</h1></a>
         </div>
     </div>
 </div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

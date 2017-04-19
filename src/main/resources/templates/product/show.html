@@ -9,31 +9,26 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
+<header th:replace="fragments :: header"></header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h1 class="jumbotron">Warehouse Management Systems</h1>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="jumbotron">
-                Product Management
+            <h2 class="jumbotron identifier">
+                <a th:href="@{/product/all}">Back to Products</a>
             </h2>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
             <div class="form-horizontal">
-                <div class="form-group">
+                <div class="form-group col-md-4">
                     <label class="col-md-2 control-label">
                         Product ID:
                     </label>
                     <div class="col-md-10">
-                        <p class="form-control-static" th:text="${product.productId}">Product Name</p>
+                        <p class="form-control-static" th:text="${product.productId}">Product ID</p>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group col-md-4">
                     <label class="col-md-2 control-label">
                         Product:
                     </label>
@@ -41,9 +36,15 @@
                         <p class="form-control-static" th:text="${product.productName}">Product Price</p>
                     </div>
                 </div>
+                <div class="form-group col-md-4">
+                    <label class="col-md-2 control-label">
+                        Current Inventory:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${product.productInventory}">Product Price</p>
+                    </div>
+                </div>
             </div>
-        </div>
-        <h2 th:text="${product.productName}">Product Name</h2>
     </div>
     <div class="row">
         <div class="col-md-12">
@@ -52,6 +53,7 @@
                     <tr>
                         <th>Date</th>
                         <th>Shipment Id</th>
+                        <th>Shipment Details</th>
                         <th>Shipment Type</th>
                         <th>Quantity</th>
                     </tr>
@@ -60,6 +62,7 @@
                     <tr th:each="lot : ${lots}">
                         <td th:text="${{lot.value.createdOn}}">Shipment Date</td>
                         <td th:text="${lot.key}">Shipment Id</td>
+                        <td><a th:href="@{/shipment/show/} + ${lot.key}">View Shipment</a></td>
                         <td th:text="${lot.value.shipmentType}">Shipment Type</td>
                         <td th:text="${lot.value.quantity}">Inventory Change</td>
                     </tr>
@@ -67,14 +70,7 @@
             </table>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/" class="navigation-button my-button"><h1>Main Menu</h1></a>
-        </div>
-        <div class="col-md-6">
-            <a href="/product/all" class="navigation-button my-button"><h1>Products</h1></a>
-        </div>
-    </div>
 </div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

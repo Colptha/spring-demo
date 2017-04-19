@@ -2,63 +2,61 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
-    <title>Warehouse | Products</title>
+    <title>Warehouse | Employees</title>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
           th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="../../static/css/styles.css"
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <a href="/index.html"><h1 id="warehouse">Warehouse Management Systems</h1></a>
-    </div>
-</div>
+<header th:replace="fragments :: header"></header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
             <h2 class="jumbotron identifier">
-                All Products
+                All Employees
             </h2>
         </div>
     </div>
-    <div class="row" th:if="${not #lists.isEmpty(products)}">
+    <div class="row" th:if="${not #lists.isEmpty(employees)}">
         <div class="col-md-12">
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th scope="col">Product ID</th>
-                    <th scope="col">Product</th>
-                    <th scope="col">Current Inventory</th>
-                    <th scope="col">Shipment Details</th>
+                    <th scope="col">Employee ID</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Employee Details</th>
+                    <th scope="col">Edit Details</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="product : ${products}">
-                    <td th:text="${product.value.productId}">Product</td>
-                    <td th:text="${product.value.productName}">Price</td>
-                    <td th:text="${product.value.productInventory}">Price</td>
+                <tr th:each="employee : ${employees}">
+                    <td th:text="${employee.value.employeeId}">Employee ID</td>
+                    <td th:text="${employee.value.lastName}">Last Name</td>
+                    <td th:text="${employee.value.firstName}">First Name</td>
                     <td>
-                        <a href="show.html" th:href="@{/product/show/} + ${product.value.productId}">
-                            <span class="view-me">View Shipments</span>
+                        <a href="show.html" th:href="@{/employee/show/} + ${employee.value.employeeId}">
+                            <span class="view-me">View</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a href="show.html" th:href="@{/employee/edit/} + ${employee.value.employeeId}">
+                            <span class="view-me">Edit</span>
                         </a>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <div class="new-item">
+                <a th:href="@{/employee/new}" class="my-button">New Employee</a>
+            </div>
         </div>
     </div>
-    <div class="row" th:if="${#lists.isEmpty(products)}">
+    <div class="row" th:if="${#lists.isEmpty(employees)}">
         <h2 class="identifier">There are currently no products to show</h2>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/" class="navigation-button my-button"><h1>Main Menu</h1></a>
-        </div>
-        <div class="col-md-6">
-            <a href="/employee/all" class="navigation-button my-button"><h1>Employees</h1></a>
-        </div>
-    </div>
 </div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

@@ -45,7 +45,7 @@ public class ShipmentServiceMapImpl implements ShipmentService {
     }
 
     @Override
-    public TreeMap<Integer, ProductLot> listByProductId(ProductId productId) {
+    public TreeMap<Integer, ProductLot> listProductLotsByShipmentId(ProductId productId) {
         TreeMap<Integer, ProductLot> productLotList = new TreeMap<>();
 
         shipmentMap.forEach((integer, shipment) -> shipment.getProductLots().forEach(productLot -> {
@@ -82,10 +82,10 @@ public class ShipmentServiceMapImpl implements ShipmentService {
         currentShipment.setProductLots(currentLots); // end of map object reference fix
 
         Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
-        ShipmentForm priorShipment = null;
+        Shipment priorShipment = null;
 
         if (shipmentId.isPresent()) {
-            priorShipment = shipmentConverter.convert(shipmentMap.get(shipmentId.get()));
+            priorShipment = shipmentMap.get(shipmentId.get());
         }
 
         processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);

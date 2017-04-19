@@ -9,11 +9,7 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <a href="/index.html"><h1 id="warehouse">Warehouse Management Systems</h1></a>
-    </div>
-</div>
+<header th:replace="fragments :: header"></header>
 <div class="container">
     <div class="row">
         <div class="col-md-12">
@@ -30,7 +26,7 @@
                     <th scope="col">Product ID</th>
                     <th scope="col">Product</th>
                     <th scope="col">Current Inventory</th>
-                    <th scope="col">Shipment Details</th>
+                    <th scope="col">Details</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -40,7 +36,7 @@
                     <td th:text="${product.value.productInventory}">Price</td>
                     <td>
                         <a href="show.html" th:href="@{/product/show/} + ${product.value.productId}">
-                            <span class="view-me">View Shipments</span>
+                            <span class="view-me">View Product</span>
                         </a>
                     </td>
                 </tr>
@@ -51,14 +47,7 @@
     <div class="row" th:if="${#lists.isEmpty(products)}">
         <h2 class="identifier">There are currently no products to show</h2>
     </div>
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/" class="navigation-button my-button"><h1>Main Menu</h1></a>
-        </div>
-        <div class="col-md-6">
-            <a href="/product/all" class="navigation-button my-button"><h1>Products</h1></a>
-        </div>
-    </div>
 </div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

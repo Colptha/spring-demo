@@ -20,6 +20,7 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         employeeForm.setCreatedOn(employee.getCreatedOn());
         employeeForm.setUpdatedOn(employee.getUpdatedOn());
         employeeForm.setVersion(employee.getVersion());
+        employeeForm.setAddress(employee.getAddress());
         return employeeForm;
     }
 
@@ -29,7 +30,8 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         // database id will be obtained from db
         employee.setLastName(employeeForm.getLastName());
         employee.setFirstName(employeeForm.getFirstName());
-        employee.setEmployeeId(employeeForm.getEmployeeId());
+        employee.setEmployeeId(employeeForm.getEmployeeId().toUpperCase());
+        employee.setAddress(employeeForm.getAddress());
         employee.setVersion(employeeForm.getVersion());
         return employee;
     }

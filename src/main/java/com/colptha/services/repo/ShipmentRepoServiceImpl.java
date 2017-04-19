@@ -50,12 +50,12 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     }
 
     @Override
-    public TreeMap<Integer, ProductLot> listByProductId(ProductId productId) {
+    public TreeMap<Integer, ProductLot> listProductLotsByShipmentId(ProductId productId) {
         TreeMap<Integer, ProductLot> shipmentFormTreeMap = new TreeMap<>();
 
-        listAll().forEach((integer, shipmentForm) -> shipmentForm.getProductLots().forEach(productLot -> {
+        listAll().forEach((shipmentId, shipmentForm) -> shipmentForm.getProductLots().forEach(productLot -> {
             if (productLot.getProductId().equals(productId)) {
-                shipmentFormTreeMap.put(integer, productLot);
+                shipmentFormTreeMap.put(shipmentId, productLot);
             }
         }));
 
@@ -75,13 +75,21 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
         Set<ProductLot> currentLots = currentShipment.getProductLots();
 
         Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
-        ShipmentForm priorShipment = null;
+        Shipment priorShipment = null;
 
         if (shipmentId.isPresent()) {
-            priorShipment = findOne(shipmentId.get());
+            priorShipment = shipmentRepository.findByShipmentId(shipmentId.get());
         }
 
-        processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
+
+
+        Integer versionModifier =
+                processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
+
+        Optional<Integer> version = Optional.ofNullable(currentShipment.getVersion());
+        version.ifPresent(integer -> currentShipment.setVersion(currentShipment.getVersion() + versionModifier));
+
+
 
         return shipmentConverter.convert(shipmentRepository.save(currentShipment));
     }

@@ -1,3 +1,24 @@
+dt,
+dd {
+    display: inline-block;
+}
+dt {
+    width: 29%;
+    text-align: right;
+    padding: 0 15px 10px 0;
+}
+dd {
+    width: 70%;
+}
+button {
+    margin-bottom: 15px;
+    margin-left: 30%;
+    width: 100px;
+}
+
+input {
+    width: 80%;
+}
 a {
     color: inherit;
     display: block;
@@ -10,17 +31,30 @@ th {
     color: #fff;
     background-color: #333;
 }
+footer.jumbotron {
+    margin-bottom: 0;
+}
 .view-me {
     font-weight: bold;
 }
 .my-button {
     background: #ddd;
+    border: none;
+    border-radius: 10px;
+}
+.my-button:hover {
+    background: #ccc;
+    color: #700;
 }
 .navigation-button {
-    padding: 25px;
+    padding: 5px;
     text-align: center;
     border-radius: 8px;
-    margin-bottom: 20px;
+}
+.new-item {
+    width: 8em;
+    text-align: center;
+    margin-bottom: 2em;
 }
 .identifier {
     text-align: center;

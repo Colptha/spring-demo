@@ -1,5 +1,7 @@
 package com.colptha.dom.command;
 
+import com.colptha.dom.entities.Address;
+
 /**
  * Created by Colptha on 4/1/17.
  */
@@ -8,6 +10,7 @@ public class EmployeeForm extends AbstractCommandObject {
     private String firstName;
     private String lastName;
     private String employeeId;
+    private Address address;
 
     public String getFirstName() {
         return firstName;
@@ -31,5 +34,13 @@ public class EmployeeForm extends AbstractCommandObject {
 
     public void setEmployeeId(String employeeId) {
         this.employeeId = employeeId;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 }

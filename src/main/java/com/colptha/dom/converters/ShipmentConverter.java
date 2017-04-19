@@ -27,7 +27,7 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
     public Shipment convert(ShipmentForm shipmentForm) {
         Shipment shipment = new Shipment();
         // dates will be set on the way into the database
-        // database id will be obtained from db
+        // database id will be checked for on the way in
         shipment.setProductLots(shipmentForm.getProductLots());
         shipment.setShipmentId(shipmentForm.getShipmentId());
         shipment.setShipmentType(shipmentForm.getShipmentType());

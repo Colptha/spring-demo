@@ -1,10 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8"/>
+    <title th:text="'Warehouse | Employee ' + ${employee.employeeId}">Warehouse | Employee</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
 </head>
 <body>
-
+<header th:replace="fragments :: header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="jumbotron identifier">
+                <a th:href="@{/employee/all}">Back to Employees</a>
+            </h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        Employee ID:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.employeeId}">Employee ID</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        Last Name:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.lastName}">Last Name</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        First Name:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.firstName}">First Name</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        Address Line 1:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.address.line1}">Address Line 1</p>
+                    </div>
+                </div>
+                <div class="form-group" th:if="${employee.address.line2 != null}">
+                    <label class="col-md-2 control-label">
+                        Address Line 2:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.address.line2}">Address Line 2</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        City:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.address.city}">City</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        State:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.address.state}">State</p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">
+                        Zipcode:
+                    </label>
+                    <div class="col-md-10">
+                        <p class="form-control-static" th:text="${employee.address.zipcode}">Zipcode</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

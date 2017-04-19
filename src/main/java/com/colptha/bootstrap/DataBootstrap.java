@@ -3,6 +3,7 @@ package com.colptha.bootstrap;
 import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.command.ShipmentForm;
+import com.colptha.dom.entities.Address;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.dom.enums.ShipmentType;
@@ -49,26 +50,69 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
     }
 
     private void loadEmployees() {
+        Address address1 = new Address();
+        address1.setLine1("100 Main Street");
+        address1.setLine2("Apt C");
+        address1.setCity("St. Louis");
+        address1.setState("Missouri");
+        address1.setZipcode("63101");
+
+        Address address2 = new Address();
+        address2.setLine1("32 Kantian Road");
+        address2.setCity("St. Louis");
+        address2.setState("Missouri");
+        address2.setZipcode("63102");
+
+        Address address3 = new Address();
+        address3.setLine1("7892 Apriori Lane");
+        address3.setLine2("Apt 12");
+        address3.setCity("Collinsville");
+        address3.setState("Illinois");
+        address3.setZipcode("62234");
+
+        Address address4 = new Address();
+        address4.setLine1("125 Beltline Road");
+        address4.setCity("Belleville");
+        address4.setState("Illinois");
+        address4.setZipcode("62221");
+
+        Address address5 = new Address();
+        address5.setLine1("3410 Descartes Street");
+        address5.setLine2("Apt 7");
+        address5.setCity("St. Louis");
+        address5.setState("Missouri");
+        address5.setZipcode("63101");
+
         EmployeeForm employee1 = new EmployeeForm();
         EmployeeForm employee2 = new EmployeeForm();
         EmployeeForm employee3 = new EmployeeForm();
         EmployeeForm employee4 = new EmployeeForm();
         EmployeeForm employee5 = new EmployeeForm();
-        employee1.setEmployeeId("aa1");
+
+        employee1.setEmployeeId("a001");
         employee1.setFirstName("John");
         employee1.setLastName("Gill");
-        employee2.setEmployeeId("aa2");
+        employee1.setAddress(address1);
+
+        employee2.setEmployeeId("a002");
         employee2.setFirstName("Sandy");
         employee2.setLastName("Wilson");
-        employee3.setEmployeeId("aa3");
+        employee2.setAddress(address2);
+
+        employee3.setEmployeeId("a003");
         employee3.setFirstName("Martin");
         employee3.setLastName("Bucer");
-        employee4.setEmployeeId("aa4");
+        employee3.setAddress(address3);
+
+        employee4.setEmployeeId("b001");
         employee4.setFirstName("Bill");
         employee4.setLastName("Thompson");
-        employee5.setEmployeeId("aa5");
+        employee4.setAddress(address4);
+
+        employee5.setEmployeeId("b002");
         employee5.setFirstName("Jason");
         employee5.setLastName("Ruby");
+        employee5.setAddress(address5);
 
         employeeService.saveOrUpdate(employee1);
         employeeService.saveOrUpdate(employee2);

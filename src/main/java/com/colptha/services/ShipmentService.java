@@ -13,11 +13,18 @@ import java.util.*;
  */
 public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
-    TreeMap<Integer, ProductLot> listByProductId(ProductId productId);
+    TreeMap<Integer, ProductLot> listProductLotsByShipmentId(ProductId productId);
 
-    default void processShipmentProductLots(Optional<Integer> shipmentId,
+    default TreeMap<Integer, ProductLot> listProductLotsByProductId(ShipmentForm shipmentForm) {
+        TreeMap<Integer, ProductLot> productIdProductLotTreeMap = new TreeMap<>();
+        shipmentForm.getProductLots()
+                .forEach(productLot -> productIdProductLotTreeMap.put(productLot.getProductId().ordinal(), productLot));
+        return productIdProductLotTreeMap;
+    }
+
+    default Integer processShipmentProductLots(Optional<Integer> shipmentId,
                                             Shipment currentShipment,
-                                            ShipmentForm priorShipment,
+                                            Shipment priorShipment,
                                             Set<ProductLot> currentLots,
                                             ProductService productService) {
 
@@ -28,18 +35,33 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
                 .orElse(null);
 
         adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
+        Integer versionModifier = 0;
 
         if (shipmentId.isPresent()) {
             currentShipment.setCreatedOn(priorShipment.getCreatedOn());
+            currentShipment.setDatabaseId(priorShipment.getDatabaseId());
+
             Set<ProductLot> priorLots = priorShipment.getProductLots();
 
+            // returns list of product id's that are no longer in shipment, hence all lots with these product id's
+            // should be 'reverse saved' to the product service to remove their erroneous persistence
+            // then they should be removed from priorLots, as they shouldn't be compared to current lots again
+            // to detect inventory changes
             List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-            removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
+
+            // prior lots should be passed in, any lot with a product id that should be removed should be 'reversed'
+            // and then deleted from prior lots
+            versionModifier = removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
+
+            // finally with only those product lots left in the current and prior lot groups, the inventory difference
+            // can be compared and persisted to correct the inventory
             updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
         } else {
             currentShipment.setShipmentId(getNextId());
             updateProductInventoryOnNewShipment(currentLots, productService);
         }
+
+        return versionModifier;
     }
 
     default List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
@@ -54,24 +76,33 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
         return oldProductIdList;
     }
 
-    default void removeDeletedLots(List<ProductId> oldProductIdList,
-                                   Set<ProductLot> priorLots,
-                                   ProductService productService) {
+    default Integer removeDeletedLots(List<ProductId> removeMeList,
+                                        Set<ProductLot> priorLots,
+                                        ProductService productService) {
         final Integer UNDO = -1;
+        Integer versionModifier = 0;
 
-        if (!oldProductIdList.isEmpty()) {
-            priorLots.forEach(productLot -> {
+        if (!removeMeList.isEmpty()) {
+            Iterator<ProductLot> priorLotsIterator = priorLots.iterator();
+
+            if (priorLotsIterator.hasNext()) {
+                ProductLot productLot = priorLotsIterator.next();
                 ProductId productId = productLot.getProductId();
-                if (oldProductIdList.contains(productId)) {
+                if (removeMeList.contains(productId)) {
                     try {
                         productService.updateInventory(
                                 productId, UNDO  * productLot.getQuantity());
+                        priorLotsIterator.remove();
+                        versionModifier++;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
-            });
+            }
+
+
         }
+        return versionModifier;
     }
 
     default void updateProductInventoryOnModifiedLots(Set<ProductLot> currentLots,
@@ -121,13 +152,15 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
                         (priorShipmentType == ShipmentType.OUTBOUND && shipmentType == ShipmentType.INBOUND) ||
                         (priorShipmentType == ShipmentType.INBOUND && shipmentType == ShipmentType.OUTBOUND);
 
-        //SCENARIOS
-        // 1. new inbound           comes in positive goes out positive - DONT ADJUST
-        // 2. new outbound          comes in positive goes out negative - ADJUST
-        // 3. outbound -> inbound   comes in negative goes out positive - ADJUST
-        // 4. inbound -> outbound   comes in positive goes out negative - ADJUST
-        // 5. outbound -> outbound  comes in negative goes out negative - DONT ADJUST
-        // 6. inbound -> inbound    comes in positive goes out positive - DONT ADJUST
+       /*
+         SCENARIOS
+         1. new inbound           comes in positive goes out positive - DO NOT ADJUST
+         2. new outbound          comes in positive goes out negative - ADJUST
+         3. outbound -> inbound   comes in negative goes out positive - ADJUST
+         4. inbound -> outbound   comes in positive goes out negative - ADJUST
+         5. outbound -> outbound  comes in negative goes out negative - DO NOT ADJUST
+         6. inbound -> inbound    comes in positive goes out positive - DO NOT ADJUST
+       */
 
         if (ADJUSTMENT_NEEDED) {
             currentLots.forEach(lot -> lot.setQuantity(lot.getQuantity() * shipmentType.changeInventoryDirection()));

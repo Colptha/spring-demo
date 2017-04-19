@@ -43,7 +43,7 @@ public class ProductController {
     @RequestMapping("/show/{id}")
     public String showOne(@PathVariable ProductId id, Model model) {
         model.addAttribute("product", productService.findOne(id));
-        model.addAttribute("lots", shipmentService.listByProductId(id));
+        model.addAttribute("lots", shipmentService.listProductLotsByShipmentId(id));
 
         return "product/show";
     }
