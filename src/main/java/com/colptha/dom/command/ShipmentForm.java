@@ -17,6 +17,7 @@ public class ShipmentForm extends AbstractCommandObject{
     private Set<ProductLot> productLots = new HashSet<>();
     private ShipmentType shipmentType;
     private List<ProductLot> possibleProductLots = new ArrayList<>();
+    private boolean isNewShipment = true;
 
     public ShipmentForm() {
         populatePossibleProductLots();
@@ -59,5 +60,13 @@ public class ShipmentForm extends AbstractCommandObject{
         for (ProductId productId : ProductId.values()) {
             possibleProductLots.add(new ProductLot(productId, quantity));
         }
+    }
+
+    public boolean getIsNewShipment() {
+        return isNewShipment;
+    }
+
+    public void setIsNewShipment(boolean newShipment) {
+        this.isNewShipment = newShipment;
     }
 }

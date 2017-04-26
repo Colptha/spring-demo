@@ -62,4 +62,12 @@ public class Shipment extends AbstractEntityObject {
             productLot.setShipmentType(shipmentType);
         });
     }
+
+    @Override
+    public String toString() {
+        return String.format("##########%nShipmentID: %s%nVersion: %s%nDatabase ID: %s%n##########%n",
+                getShipmentId(),
+                getVersion(),
+                getDatabaseId());
+    }
 }

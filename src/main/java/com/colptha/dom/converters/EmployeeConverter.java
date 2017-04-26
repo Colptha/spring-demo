@@ -21,6 +21,10 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         employeeForm.setUpdatedOn(employee.getUpdatedOn());
         employeeForm.setVersion(employee.getVersion());
         employeeForm.setAddress(employee.getAddress());
+        employeeForm.setNewEmployee(false);
+        employeeForm.setPassword(employee.getPassword());
+        employeeForm.setRoles(employee.getRoles());
+
         return employeeForm;
     }
 
@@ -33,6 +37,8 @@ public class EmployeeConverter implements Converter<Employee, EmployeeForm> {
         employee.setEmployeeId(employeeForm.getEmployeeId().toUpperCase());
         employee.setAddress(employeeForm.getAddress());
         employee.setVersion(employeeForm.getVersion());
+        employee.setPassword(employeeForm.getPassword());
+        employee.setRoles(employeeForm.getRoles());
         return employee;
     }
 

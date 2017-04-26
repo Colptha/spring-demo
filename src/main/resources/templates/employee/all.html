@@ -18,7 +18,7 @@
             </h2>
         </div>
     </div>
-    <div class="row" th:if="${not #lists.isEmpty(employees)}">
+    <div class="row" th:if="${not #maps.isEmpty(employees)}">
         <div class="col-md-12">
             <table class="table table-striped">
                 <thead>
@@ -28,6 +28,8 @@
                     <th scope="col">First Name</th>
                     <th scope="col">Employee Details</th>
                     <th scope="col">Edit Details</th>
+                    <th scope="col">Remove Employee</th>
+                    <th scope="col">Reset Password</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -36,25 +38,40 @@
                     <td th:text="${employee.value.lastName}">Last Name</td>
                     <td th:text="${employee.value.firstName}">First Name</td>
                     <td>
-                        <a href="show.html" th:href="@{/employee/show/} + ${employee.value.employeeId}">
+                        <a th:href="@{/employee/show/} + ${employee.value.employeeId}">
                             <span class="view-me">View</span>
                         </a>
                     </td>
                     <td>
-                        <a href="show.html" th:href="@{/employee/edit/} + ${employee.value.employeeId}">
+                        <a th:href="@{/employee/edit/} + ${employee.value.employeeId}">
                             <span class="view-me">Edit</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a th:href="@{/employee/remove/} + ${employee.value.employeeId}">
+                            <span class="view-me">Remove</span>
+                        </a>
+                    </td>
+                    <td>
+                        <a th:href="@{/employee/password_reset/} + ${employee.value.employeeId}">
+                            <span class="view-me">Reset</span>
                         </a>
                     </td>
                 </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="row" th:if="${#maps.isEmpty(employees)}">
+        <h2 class="identifier">There are currently no employees to show</h2>
+
+    </div>
+    <div class="row">
+        <div class="col-md-12">
             <div class="new-item">
                 <a th:href="@{/employee/new}" class="my-button">New Employee</a>
             </div>
         </div>
-    </div>
-    <div class="row" th:if="${#lists.isEmpty(employees)}">
-        <h2 class="identifier">There are currently no products to show</h2>
     </div>
 </div>
 <footer th:replace="fragments :: footer"></footer>

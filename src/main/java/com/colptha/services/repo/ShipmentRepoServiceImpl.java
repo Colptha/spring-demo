@@ -68,33 +68,36 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
         return shipmentConverter.convert(shipmentRepository.findByShipmentId(shipmentId));
     }
 
-    @Override
     @Transactional
-    public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) {
+    @Override
+    public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) throws Exception {
+
+        boolean isNewShipment = shipmentForm.getIsNewShipment();
+
         Shipment currentShipment = shipmentConverter.convert(shipmentForm);
         Integer incomingVersion = currentShipment.getVersion();
 
-        // assign the possibleProductLots to the currentShipment as the set to be inventoried
         Set<ProductLot> currentLots = new HashSet<>();
         shipmentForm.getPossibleProductLots().forEach(currentLots::add);
         currentShipment.setProductLots(currentLots);
 
-        // has the shipment been saved before (ie acquired a shipmentId?)
-        Optional<Integer> shipmentId = Optional.ofNullable(currentShipment.getShipmentId());
         Shipment priorShipment = null;
+        Integer shipmentId = null;
 
-        // if so, get old data from db for comparison and to set db id and created date
-        if (shipmentId.isPresent()) {
-            priorShipment = shipmentRepository.findByShipmentId(shipmentId.get());
+        if (!shipmentForm.getIsNewShipment()) {
+            shipmentId = shipmentForm.getShipmentId();
+            priorShipment = shipmentRepository.findByShipmentId(shipmentId);
+            currentShipment.setDatabaseId(priorShipment.getDatabaseId());
         }
 
-        processShipmentProductLots(shipmentId, currentShipment, priorShipment, currentLots, productService);
+        processShipmentProductLots(isNewShipment, currentShipment, priorShipment, currentLots, productService);
 
-        if (shipmentId.isPresent()) {
-            if (!shipmentRepository.findByShipmentId(shipmentId.get()).getVersion().equals(incomingVersion)) {
+        if (!isNewShipment) {
+            if (!shipmentRepository.findByShipmentId(shipmentId).getVersion().equals(incomingVersion)) {
                 throw new OptimisticLockException("Incoming shipment version no longer matches database shipment version");
             }
         }
+
         currentShipment.setVersion(currentShipment.getVersion() + 1);
         return shipmentConverter.convert(shipmentRepository.save(currentShipment));
     }
@@ -102,5 +105,13 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     @Override
     public void delete(Integer shipmentId) {
         shipmentRepository.delete(shipmentId);
+    }
+
+    @Override
+    public void clearInventoryByShipmentId(Integer shipmentId) throws Exception {
+        Shipment shipment = shipmentRepository.findByShipmentId(shipmentId);
+        ShipmentForm shipmentForm = shipmentConverter.convert(shipment);
+
+        saveOrUpdate(shipmentForm);
     }
 }

@@ -75,6 +75,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="productLot : ${lots}">
+                    <span th:if="${productLot.value.quantity != 0}">
                     <td th:text="${productLot.value.productId}">Product ID</td>
                     <td th:text="${productLot.value.quantity}">Quantity</td>
                     <td th:text="${productLot.value.updatedOn}">Updated On</td>
@@ -83,6 +84,7 @@
                             <span class="view-me">View This Product</span>
                         </a>
                     </td>
+                    </span>
                 </tr>
                 </tbody>
             </table>

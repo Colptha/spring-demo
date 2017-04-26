@@ -5,29 +5,25 @@
     <title>Warehouse | Home</title>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
           th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
-    <link rel="stylesheet" href="../static/css/styles.css"
+    <link rel="stylesheet" href="../../static/css/styles.css"
           th:href="@{css/styles.css}"/>
 </head>
 <body>
 <div class="jumbotron">
     <div class="container">
-        <a th:href="@{/}"><h1>Warehouse Management Systems</h1></a>
+        <a href="/index.html"><h1>Warehouse Management Systems</h1></a>
     </div>
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-md-4">
-            <a href="/product/all" class="manage-button my-button"><h1>Products</h1></a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="/shipment/all" class="manage-button my-button"><h1>Shipments</h1></a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="/employee/all" class="manage-button my-button"><h1>Employees</h1></a>
+        <div class="col-md-12">
+            <div class="access_denied">
+                <h2>Access Denied</h2>
+                <p>The page you are attempting to view requires authorization.</p>
+            </div>
         </div>
     </div>
+
 </div>
 
 </body>

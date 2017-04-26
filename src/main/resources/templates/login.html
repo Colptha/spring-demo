@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Warehouse | Home</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../static/css/styles.css"
+          th:href="@{css/styles.css}"/>
+</head>
+<body onload="document.f.username.focus();">
+<div class="jumbotron">
+    <div class="container">
+        <h1>Warehouse Management Systems</h1>
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <form name="f" class="login" th:action="@{/login}" method="post">
+                <dl>
+                    <dt>
+                        <label for="username">Employee ID</label>
+                    </dt>
+                    <dd>
+                        <input required="required" id="username" name="username"/>
+                    </dd>
+                    <dt>
+                        <label for="password">Password</label>
+                    </dt>
+                    <dd>
+                        <input required="required" type="password" id="password" name="password"/>
+                    </dd>
+                </dl>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

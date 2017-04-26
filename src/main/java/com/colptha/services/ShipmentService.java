@@ -15,6 +15,8 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
     TreeMap<Integer, ProductLot> listProductLotsByShipmentId(ProductId productId);
 
+    void clearInventoryByShipmentId(Integer shipmentId) throws Exception;
+
     default TreeMap<Integer, ProductLot> listProductLotsByProductId(ShipmentForm shipmentForm) {
         TreeMap<Integer, ProductLot> productIdProductLotTreeMap = new TreeMap<>();
         shipmentForm.getProductLots()
@@ -22,85 +24,60 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
         return productIdProductLotTreeMap;
     }
 
-    default void processShipmentProductLots(Optional<Integer> shipmentId,
-                                            Shipment currentShipment,
-                                            Shipment priorShipment,
-                                            Set<ProductLot> currentLots,
-                                            ProductService productService) {
+    default void processShipmentProductLots(boolean isNewShipment, Shipment currentShipment,
+                                            Shipment priorShipment, Set<ProductLot> currentLots,
+                                            ProductService productService) throws Exception {
 
         ShipmentType shipmentType = currentShipment.getShipmentType();
 
-        ShipmentType priorShipmentType = shipmentId.map(
-                ifStoredId -> priorShipment.getShipmentType())
-                .orElse(null);
+        ShipmentType priorShipmentType = null;
+        Set<ProductLot> priorLots = null;
+
+        if (!isNewShipment) {
+            priorShipmentType = priorShipment.getShipmentType();
+            priorLots = priorShipment.getProductLots();
+        }
 
         adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
 
-        if (shipmentId.isPresent()) {
+        checkForInventoryErrors(currentLots, priorLots, productService);
+
+        if (!isNewShipment) {
             currentShipment.setCreatedOn(priorShipment.getCreatedOn());
             currentShipment.setDatabaseId(priorShipment.getDatabaseId());
 
-            Set<ProductLot> priorLots = priorShipment.getProductLots();
-
-            // returns list of product id's that are no longer in shipment, hence all lots with these product id's
-            // should be 'reverse saved' to the product service to remove their erroneous persistence
-            // then they should be removed from priorLots, as they shouldn't be compared to current lots again
-            // to detect inventory changes
-//            List<ProductId> lotsToRemoveByProductId = determineLotsToRemove(currentLots, priorLots);
-
-            // prior lots should be passed in, any lot with a product id that should be removed should be 'reversed'
-            // and then deleted from prior lots
-//            versionModifier = removeDeletedLots(lotsToRemoveByProductId, priorLots, productService);
-
-            // finally with only those product lots left in the current and prior lot groups, the inventory difference
-            // can be compared and persisted to correct the inventory
             updateProductInventoryOnModifiedLots(currentLots, priorLots, productService);
         } else {
             currentShipment.setShipmentId(getNextId());
+
             updateProductInventoryOnNewShipment(currentLots, productService);
         }
     }
 
-//    default List<ProductId> determineLotsToRemove(Set<ProductLot> currentLots, Set<ProductLot> priorLots) {
-//        List<ProductId> oldProductIdList = new ArrayList<>();
-//        priorLots.forEach(productLot -> oldProductIdList.add(productLot.getProductId()));
-//
-//        List<ProductId> newProductIdList = new ArrayList<>();
-//        currentLots.forEach(productLot -> newProductIdList.add(productLot.getProductId()));
-//
-//        oldProductIdList.removeAll(newProductIdList);
-//
-//        return oldProductIdList;
-//    }
+    default void checkForInventoryErrors(Set<ProductLot> currentLots, Set<ProductLot> priorLots, ProductService productService) throws Exception {
 
-//    default Integer removeDeletedLots(List<ProductId> removeMeList,
-//                                        Set<ProductLot> priorLots,
-//                                        ProductService productService) {
-//        final Integer UNDO = -1;
-//        Integer versionModifier = 0;
-//
-//        if (!removeMeList.isEmpty()) {
-//            Iterator<ProductLot> priorLotsIterator = priorLots.iterator();
-//
-//            if (priorLotsIterator.hasNext()) {
-//                ProductLot productLot = priorLotsIterator.next();
-//                ProductId productId = productLot.getProductId();
-//                if (removeMeList.contains(productId)) {
-//                    try {
-//                        productService.updateInventory(
-//                                productId, UNDO  * productLot.getQuantity());
-//                        priorLotsIterator.remove();
-//                        versionModifier++;
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//
-//
-//        }
-//        return versionModifier;
-//    }
+        for (ProductLot incomingProductLot : currentLots) {
+            ProductId incomingProductId = incomingProductLot.getProductId();
+
+            ProductLot priorLot;
+
+            Integer inventoryChange;
+            if (priorLots == null) {
+                inventoryChange = incomingProductLot.getQuantity();
+            } else {
+                priorLot = priorLots.stream()
+                        .filter(productLot -> productLot.getProductId() == incomingProductId).findFirst().get();
+
+                inventoryChange = incomingProductLot.getQuantity() - priorLot.getQuantity();
+            }
+
+            Integer inventoryInWarehouse = productService.findOne(incomingProductId).getProductInventory();
+            if (inventoryInWarehouse + inventoryChange < 0) {
+                throw new Exception("Product inventory cannot be negative: Product ID: " + incomingProductId);
+            }
+
+        }
+    }
 
     default void updateProductInventoryOnModifiedLots(Set<ProductLot> currentLots,
                                                       Set<ProductLot> priorLots,
@@ -108,21 +85,15 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
         for (ProductLot incomingProductLot : currentLots) {
 
-
             ProductId incomingProductId = incomingProductLot.getProductId();
 
-            Optional<ProductLot> priorLot =
-                    priorLots.stream().filter(lot -> lot.getProductId() == incomingProductId).findFirst();
+            ProductLot priorLot = priorLots.stream()
+                    .filter(lot -> lot.getProductId() == incomingProductId).findFirst().get();
 
             try {
-                if (priorLot.isPresent()) {
-                    Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.get().getQuantity();
-                    if (!inventoryDiscrepancy.equals(0)) {
-                        productService.updateInventory(incomingProductId, inventoryDiscrepancy);
-                    }
-
-                } else {
-                    productService.updateInventory(incomingProductId, incomingProductLot.getQuantity());
+                Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.getQuantity();
+                if (!inventoryDiscrepancy.equals(0)) {
+                    productService.updateInventory(incomingProductId, inventoryDiscrepancy);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

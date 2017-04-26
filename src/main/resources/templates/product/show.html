@@ -60,11 +60,13 @@
                 </thead>
                 <tbody>
                     <tr th:each="lot : ${lots}">
+                        <span th:if="${lot.value.quantity != 0}">
                         <td th:text="${{lot.value.createdOn}}">Shipment Date</td>
                         <td th:text="${lot.key}">Shipment Id</td>
                         <td><a th:href="@{/shipment/show/} + ${lot.key}">View Shipment</a></td>
                         <td th:text="${lot.value.shipmentType}">Shipment Type</td>
                         <td th:text="${lot.value.quantity}">Inventory Change</td>
+                        </span>
                     </tr>
                 </tbody>
             </table>

@@ -1,7 +1,6 @@
 package com.colptha.controllers;
 
 import com.colptha.dom.command.EmployeeForm;
-import com.colptha.dom.entities.Employee;
 import com.colptha.dom.validators.EmployeeFormValidator;
 import com.colptha.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +36,7 @@ public class EmployeeController {
 
     @RequestMapping(method = RequestMethod.POST)
     public String postEmployee(@Valid EmployeeForm employeeForm, BindingResult bindingResult) {
+
         employeeFormValidator.validate(employeeForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -44,7 +44,11 @@ public class EmployeeController {
             return "employee/form";
         }
 
-        employeeService.saveOrUpdate(employeeForm);
+        try {
+            employeeService.saveOrUpdate(employeeForm);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return "redirect:/employee/all";
     }
@@ -70,7 +74,7 @@ public class EmployeeController {
 
     @RequestMapping("/new")
     public String newEmployee(Model model) {
-        model.addAttribute("employeeForm", new Employee());
+        model.addAttribute("employeeForm", new EmployeeForm());
 
         return "employee/form";
     }
@@ -80,6 +84,20 @@ public class EmployeeController {
         model.addAttribute("employeeForm", employeeService.findOne(id));
 
         return "employee/form";
+    }
+
+    @RequestMapping("/password_reset/{id}")
+    public String resetPassword(@PathVariable String id) {
+        employeeService.resetPassword(id);
+
+        return "redirect:/employee/all";
+    }
+
+    @RequestMapping("/remove/{id}")
+    public String removeEmployee(@PathVariable String id) {
+        employeeService.delete(id);
+
+        return "redirect:/employee/all";
     }
 
 }

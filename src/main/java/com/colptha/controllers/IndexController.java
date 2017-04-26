@@ -14,4 +14,14 @@ public class IndexController {
         return "index";
     }
 
+    @RequestMapping("/login")
+    public String loginForm() {
+        return "login";
+    }
+
+    @RequestMapping("/access_denied")
+    public String denied() {
+        return "access_denied";
+    }
+
 }

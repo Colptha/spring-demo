@@ -20,6 +20,7 @@ public class ShipmentConverter implements Converter<Shipment, ShipmentForm> {
         shipmentForm.setProductLots(shipment.getProductLots());
         shipmentForm.setShipmentType(shipment.getShipmentType());
         shipmentForm.setVersion(shipment.getVersion());
+        shipmentForm.setIsNewShipment(false);
 
         return shipmentForm;
     }

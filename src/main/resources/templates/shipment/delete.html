@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title th:text="'Warehouse | Shipment ' + ${shipmentId}">Warehouse | Shipment</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<header th:replace="fragments :: header"></header>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="jumbotron identifier">
+                <a th:href="@{/shipment/all}">Back to Shipments</a>
+            </h2>
+        </div>
+    </div>
+    <div class="row" th:if="${shipmentId != null}">
+        <div class="col-md-12 delete-options">
+        <p>A deleted shipment cannot be recovered.</p>
+        <p th:text="'Are you sure you wish to delete Shipment #' + ${shipmentId} + '?'"></p>
+        <form th:action="@{/shipment/delete/} + ${shipmentId}" method="post">
+            <button type="submit">Delete Shipment</button>
+        </form>
+        </div>
+    </div>
+</div>
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>

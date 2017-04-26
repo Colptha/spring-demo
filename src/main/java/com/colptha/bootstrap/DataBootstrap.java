@@ -6,6 +6,7 @@ import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.Address;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
+import com.colptha.dom.enums.Role;
 import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.EmployeeService;
 import com.colptha.services.ProductService;
@@ -95,32 +96,47 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         employee1.setFirstName("John");
         employee1.setLastName("Gill");
         employee1.setAddress(address1);
+        employee1.setPassword("password");
+        employee1.addRole(Role.ADMIN);
 
         employee2.setEmployeeId("a002");
         employee2.setFirstName("Sandy");
         employee2.setLastName("Wilson");
         employee2.setAddress(address2);
+        employee2.setPassword("password");
+        employee2.addRole(Role.MANAGER);
 
         employee3.setEmployeeId("a003");
         employee3.setFirstName("Martin");
         employee3.setLastName("Bucer");
         employee3.setAddress(address3);
+        employee3.setPassword("password");
+        employee3.addRole(Role.USER);
 
         employee4.setEmployeeId("b001");
         employee4.setFirstName("Bill");
         employee4.setLastName("Thompson");
         employee4.setAddress(address4);
+        employee4.setPassword("password");
+        employee4.addRole(Role.USER);
 
         employee5.setEmployeeId("b002");
         employee5.setFirstName("Jason");
         employee5.setLastName("Ruby");
         employee5.setAddress(address5);
+        employee5.setPassword("password");
+        employee5.addRole(Role.USER);
 
-        employeeService.saveOrUpdate(employee1);
-        employeeService.saveOrUpdate(employee2);
-        employeeService.saveOrUpdate(employee3);
-        employeeService.saveOrUpdate(employee4);
-        employeeService.saveOrUpdate(employee5);
+        try {
+            employeeService.saveOrUpdate(employee1);
+            employeeService.saveOrUpdate(employee2);
+            employeeService.saveOrUpdate(employee3);
+            employeeService.saveOrUpdate(employee4);
+            employeeService.saveOrUpdate(employee5);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println("################# load employees");
     }
 
@@ -186,26 +202,31 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         product20.setProductId(ProductId.D5);
         product20.setProductName("Venison");
 
-        productService.saveOrUpdate(product1);
-        productService.saveOrUpdate(product2);
-        productService.saveOrUpdate(product3);
-        productService.saveOrUpdate(product4);
-        productService.saveOrUpdate(product5);
-        productService.saveOrUpdate(product6);
-        productService.saveOrUpdate(product7);
-        productService.saveOrUpdate(product8);
-        productService.saveOrUpdate(product9);
-        productService.saveOrUpdate(product10);
-        productService.saveOrUpdate(product11);
-        productService.saveOrUpdate(product12);
-        productService.saveOrUpdate(product13);
-        productService.saveOrUpdate(product14);
-        productService.saveOrUpdate(product15);
-        productService.saveOrUpdate(product16);
-        productService.saveOrUpdate(product17);
-        productService.saveOrUpdate(product18);
-        productService.saveOrUpdate(product19);
-        productService.saveOrUpdate(product20);
+        try {
+            productService.saveOrUpdate(product1);
+            productService.saveOrUpdate(product2);
+            productService.saveOrUpdate(product3);
+            productService.saveOrUpdate(product4);
+            productService.saveOrUpdate(product5);
+            productService.saveOrUpdate(product6);
+            productService.saveOrUpdate(product7);
+            productService.saveOrUpdate(product8);
+            productService.saveOrUpdate(product9);
+            productService.saveOrUpdate(product10);
+            productService.saveOrUpdate(product11);
+            productService.saveOrUpdate(product12);
+            productService.saveOrUpdate(product13);
+            productService.saveOrUpdate(product14);
+            productService.saveOrUpdate(product15);
+            productService.saveOrUpdate(product16);
+            productService.saveOrUpdate(product17);
+            productService.saveOrUpdate(product18);
+            productService.saveOrUpdate(product19);
+            productService.saveOrUpdate(product20);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         System.out.println("################# load products");
     }
 
@@ -242,12 +263,17 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         shipment6.setShipmentType(ShipmentType.OUTBOUND);
         shipment6.getPossibleProductLots().get(10).setQuantity(quantity750);
 
-        shipmentService.saveOrUpdate(shipment1);
-        shipmentService.saveOrUpdate(shipment2);
-        shipmentService.saveOrUpdate(shipment3);
-        shipmentService.saveOrUpdate(shipment4);
-        shipmentService.saveOrUpdate(shipment5);
-        shipmentService.saveOrUpdate(shipment6);
+        try {
+            shipmentService.saveOrUpdate(shipment1);
+            shipmentService.saveOrUpdate(shipment2);
+            shipmentService.saveOrUpdate(shipment3);
+            shipmentService.saveOrUpdate(shipment4);
+            shipmentService.saveOrUpdate(shipment5);
+            shipmentService.saveOrUpdate(shipment6);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         System.out.println("################# load shipments");
     }

@@ -2,11 +2,14 @@ package com.colptha.services.repo;
 
 import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.converters.EmployeeConverter;
+import com.colptha.dom.converters.UserDetailsConverter;
 import com.colptha.dom.entities.Employee;
 import com.colptha.services.EmployeeService;
 import com.colptha.services.repo.interfaces.EmployeeRepository;
+import com.colptha.services.security.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,6 +25,18 @@ import java.util.Optional;
 public class EmployeeRepoServiceImpl implements EmployeeService {
     private EmployeeRepository employeeRepository;
     private EmployeeConverter employeeConverter;
+    private EncryptionService encryptionService;
+    private UserDetailsConverter userDetailsConverter;
+
+    @Autowired
+    public void setUserDetailsConverter(UserDetailsConverter userDetailsConverter) {
+        this.userDetailsConverter = userDetailsConverter;
+    }
+
+    @Autowired
+    public void setEncryptionService(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
+    }
 
     @Autowired
     public void setEmployeeConverter(EmployeeConverter employeeConverter) {
@@ -48,19 +63,46 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
         return employeeConverter.convert(employeeRepository.findByEmployeeId(query));
     }
 
+    public UserDetails findUserDetails(String query) throws NoSuchElementException {
+        Optional<Employee> employee = Optional.ofNullable(employeeRepository.findByEmployeeId(query));
+        return employee.map(e -> userDetailsConverter.convert(e)).orElse(null);
+    }
+
+    @Override
+    public boolean isIdInUse(EmployeeForm employeeForm) {
+
+        Optional<Employee> employee =
+                Optional.ofNullable(employeeRepository.findByEmployeeId(employeeForm.getEmployeeId()));
+
+        return employee.isPresent() && employee.get().getEmployeeId().equals(employeeForm.getEmployeeId());
+    }
+
     @Override
     public EmployeeForm saveOrUpdate(EmployeeForm employeeForm) {
         Employee currentEmployee = employeeConverter.convert(employeeForm);
 
-        Optional<Employee> existingEmployee =
-                Optional.ofNullable(employeeRepository.findByEmployeeId(currentEmployee.getEmployeeId()));
+        if (employeeForm.isNewEmployee()) {
+            String encryptedPassword = encryptionService.encryptPassword(currentEmployee.getPassword());
+            currentEmployee.setEncryptedPassword(encryptedPassword);
+        } else {
+            Employee existingEmployee = employeeRepository.findByEmployeeId(currentEmployee.getEmployeeId());
 
-        existingEmployee.ifPresent(employee -> {
-            currentEmployee.setCreatedOn(employee.getCreatedOn());
-            currentEmployee.setDatabaseId(employee.getDatabaseId());
-        });
+            currentEmployee.setCreatedOn(existingEmployee.getCreatedOn());
+            currentEmployee.setDatabaseId(existingEmployee.getDatabaseId());
+            currentEmployee.setEncryptedPassword(existingEmployee.getEncryptedPassword());
+        }
 
         return employeeConverter.convert(employeeRepository.save(currentEmployee));
+    }
+
+    @Override
+    public void resetPassword(String id) {
+        Employee employee = employeeRepository.findByEmployeeId(id);
+
+        String encryptedPassword = encryptionService.encryptPassword(employee.getFirstName() + employee.getLastName());
+        employee.setEncryptedPassword(encryptedPassword);
+
+        employeeRepository.save(employee);
     }
 
     @Override
