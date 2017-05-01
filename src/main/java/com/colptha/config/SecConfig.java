@@ -6,20 +6,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * Created by Colptha on 3/31/17.
  */
+@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity
 @Configuration
 public class SecConfig extends WebSecurityConfigurerAdapter {
-
     private AuthenticationProvider authenticationProvider;
 
     @Autowired
@@ -47,23 +47,23 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
         http
                 .headers().frameOptions().disable().and()
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/webjars/**").permitAll()
 
-                .and().authorizeRequests().antMatchers("/", "/index","/login").permitAll()
-
-                .and().authorizeRequests().antMatchers("/employee/**").hasRole("ADMIN")
+                .authorizeRequests().antMatchers("/", "/index","/login","/login?logout").permitAll()
+                .and().authorizeRequests().antMatchers("/css/**").permitAll()
+                .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
+                .and().authorizeRequests().antMatchers("/employee/**").hasAnyRole("ADMIN", "MANAGER")
                 .and().authorizeRequests().antMatchers("/product/**").hasAnyRole("ADMIN", "MANAGER")
                 .and().authorizeRequests().antMatchers("/shipment/**").hasAnyRole("ADMIN", "MANAGER", "USER")
 
                 .and().authorizeRequests().antMatchers("/h2-console", "/h2-console/**").permitAll()
+                .and().authorizeRequests().antMatchers("/account/**").authenticated()
 
-                .and().authorizeRequests().anyRequest().authenticated()
 
                 .and().formLogin()
                     .loginPage("/login")
-                    .and().logout().logoutSuccessUrl("/")
 
-                .and().exceptionHandling().accessDeniedPage("/access_denied");
+                .and().exceptionHandling().accessDeniedPage("/access_denied")
+                .and().authorizeRequests().anyRequest().authenticated();
 
     }
 }

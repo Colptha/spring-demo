@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Warehouse | Employees</title>
@@ -9,8 +10,10 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<header th:replace="fragments :: header"></header>
-<div class="container">
+<nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+<header th:replace="fragments :: .header"></header>
+
+<main class="container">
     <div class="row">
         <div class="col-md-12">
             <h2 class="jumbotron identifier">
@@ -28,7 +31,7 @@
                     <th scope="col">First Name</th>
                     <th scope="col">Employee Details</th>
                     <th scope="col">Edit Details</th>
-                    <th scope="col">Remove Employee</th>
+                    <th scope="col" sec:authorize="hasRole('ROLE_ADMIN')">Remove Employee</th>
                     <th scope="col">Reset Password</th>
                 </tr>
                 </thead>
@@ -47,7 +50,7 @@
                             <span class="view-me">Edit</span>
                         </a>
                     </td>
-                    <td>
+                    <td sec:authorize="hasRole('ROLE_ADMIN')">
                         <a th:href="@{/employee/remove/} + ${employee.value.employeeId}">
                             <span class="view-me">Remove</span>
                         </a>
@@ -66,14 +69,14 @@
         <h2 class="identifier">There are currently no employees to show</h2>
 
     </div>
-    <div class="row">
+    <div class="row"  sec:authorize="hasRole('ROLE_ADMIN')">
         <div class="col-md-12">
             <div class="new-item">
                 <a th:href="@{/employee/new}" class="my-button">New Employee</a>
             </div>
         </div>
     </div>
-</div>
+</main>
 <footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

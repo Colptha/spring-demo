@@ -38,6 +38,10 @@ public class EmployeeFormValidator implements Validator {
         }
 
 
+        if (employeeForm.isNewEmployee() && !employeeForm.getPassword().equals(employeeForm.getConfirmPassword())) {
+            errors.rejectValue("password", "PasswordsDoNotMatch", "Passwords must match");
+        }
+
         if (employeeForm.getFirstName() == null || employeeForm.getFirstName().isEmpty()) {
             errors.rejectValue("firstName", "FirstNameEmpty", "First Name cannot be empty");
         }

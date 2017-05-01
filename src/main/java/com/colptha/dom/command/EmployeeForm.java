@@ -1,12 +1,6 @@
 package com.colptha.dom.command;
 
 import com.colptha.dom.entities.Address;
-import com.colptha.dom.enums.Role;
-import com.colptha.services.security.UserDetailsImpl;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Colptha on 4/1/17.
@@ -17,8 +11,8 @@ public class EmployeeForm extends AbstractCommandObject {
     private String lastName;
     private String employeeId;
     private Address address;
-    private String password;
-    private Set<Role> roles = new HashSet<>();
+    private PasswordForm passwordForm = new PasswordForm();
+    private String role;
     private boolean newEmployee = true;
 
     public String getFirstName() {
@@ -62,22 +56,26 @@ public class EmployeeForm extends AbstractCommandObject {
     }
 
     public String getPassword() {
-        return password;
+        return passwordForm.getNewPassword();
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        passwordForm.setNewPassword(password);
     }
 
-    public void addRole(final Role role) {
-        roles.add(role);
+    public String getConfirmPassword() {
+        return passwordForm.getConfirmPassword();
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public void setConfirmPassword(String confirmPassword) {
+        passwordForm.setConfirmPassword(confirmPassword);
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

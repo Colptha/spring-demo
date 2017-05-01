@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>My Account</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+<header th:replace="fragments :: .header"></header>
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                Employee ID:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.employeeId}">Employee ID</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                Last Name:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.lastName}">Last Name</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                First Name:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.firstName}">First Name</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                Address Line 1:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.address.line1}">Address Line 1</p>
+                            </div>
+                        </div>
+                        <div class="form-group" th:if="${employee.address.line2 != null}">
+                            <label class="col-md-5 control-label">
+                                Address Line 2:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.address.line2}">Address Line 2</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                City:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.address.city}">City</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                State:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.address.state}">State</p>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 control-label">
+                                Zipcode:
+                            </label>
+                            <div class="col-md-7">
+                                <p class="form-control-static" th:text="${employee.address.zipcode}">Zipcode</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 account-options">
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="my-button identifier" th:href="@{/account/edit}">Edit My Account</a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a class="my-button identifier" th:href="@{/account/change_password}">Change My Password</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+<footer th:replace="fragments :: footer"></footer>
+</body>
+</html>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Warehouse | Home</title>
@@ -9,26 +10,10 @@
           th:href="@{css/styles.css}"/>
 </head>
 <body>
-<div class="jumbotron">
-    <div class="container">
-        <a th:href="@{/}"><h1>Warehouse Management Systems</h1></a>
-    </div>
-</div>
-<div class="container">
-    <div class="row">
-        <div class="col-md-4">
-            <a href="/product/all" class="manage-button my-button"><h1>Products</h1></a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="/shipment/all" class="manage-button my-button"><h1>Shipments</h1></a>
-        </div>
-
-        <div class="col-md-4">
-            <a href="/employee/all" class="manage-button my-button"><h1>Employees</h1></a>
-        </div>
-    </div>
-</div>
-
+<main>
+    <nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+    <header th:replace="fragments :: frontdoor"></header>
+</main>
+<footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

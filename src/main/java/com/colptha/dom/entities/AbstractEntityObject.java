@@ -36,10 +36,6 @@ public abstract class AbstractEntityObject {
         return updatedOn;
     }
 
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
     @PrePersist
     @PreUpdate
     public void updateTimeStamps() {

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Warehouse | Home</title>
@@ -9,12 +10,10 @@
           th:href="@{css/styles.css}"/>
 </head>
 <body onload="document.f.username.focus();">
-<div class="jumbotron">
-    <div class="container">
-        <h1>Warehouse Management Systems</h1>
-    </div>
-</div>
-<div class="container">
+<nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+<header th:replace="fragments :: .header"></header>
+
+<main class="container">
     <div class="row">
         <div class="col-md-12">
             <form name="f" class="login" th:action="@{/login}" method="post">
@@ -37,7 +36,7 @@
         </div>
     </div>
 
-</div>
+</main>
 
 </body>
 </html>

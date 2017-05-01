@@ -4,6 +4,7 @@ import com.colptha.dom.enums.ProductId;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,17 +30,20 @@ public class ProductController {
     @Autowired
     public void setProductService(ProductService productService) { this.productService = productService; }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/")
     public String root() {
         return "redirect:/product/all";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("products", new TreeMap<>(productService.listAll()));
         return "product/all";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/show/{id}")
     public String showOne(@PathVariable ProductId id, Model model) {
         model.addAttribute("product", productService.findOne(id));

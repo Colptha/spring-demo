@@ -51,10 +51,6 @@ public class ShipmentForm extends AbstractCommandObject{
         return possibleProductLots;
     }
 
-    public void setPossibleProductLots(List<ProductLot> possibleProductLots) {
-        this.possibleProductLots = possibleProductLots;
-    }
-
     private void populatePossibleProductLots() {
         final int quantity = 0;
         for (ProductId productId : ProductId.values()) {

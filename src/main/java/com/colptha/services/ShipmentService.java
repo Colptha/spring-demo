@@ -30,15 +30,12 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
         ShipmentType shipmentType = currentShipment.getShipmentType();
 
-        ShipmentType priorShipmentType = null;
         Set<ProductLot> priorLots = null;
-
         if (!isNewShipment) {
-            priorShipmentType = priorShipment.getShipmentType();
             priorLots = priorShipment.getProductLots();
         }
 
-        adjustInventoryDirection(shipmentType, priorShipmentType, currentLots);
+        adjustInventoryDirection(shipmentType, currentLots);
 
         checkForInventoryErrors(currentLots, priorLots, productService);
 
@@ -112,21 +109,17 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
     }
 
     default void adjustInventoryDirection(ShipmentType shipmentType,
-                                          ShipmentType priorShipmentType,
                                           Set<ProductLot> currentLots) {
 
-        final boolean ADJUSTMENT_NEEDED =
-                (priorShipmentType == null && shipmentType == ShipmentType.OUTBOUND) ||
-                        (priorShipmentType == ShipmentType.OUTBOUND && shipmentType == ShipmentType.INBOUND) ||
-                        (priorShipmentType == ShipmentType.INBOUND && shipmentType == ShipmentType.OUTBOUND);
+        final boolean ADJUSTMENT_NEEDED = (shipmentType == ShipmentType.OUTBOUND);
 
        /*
          SCENARIOS
          1. new inbound           comes in positive goes out positive - DO NOT ADJUST
          2. new outbound          comes in positive goes out negative - ADJUST
-         3. outbound -> inbound   comes in negative goes out positive - ADJUST
+         3. outbound -> inbound   comes in positive goes out positive - DO NOT ADJUST
          4. inbound -> outbound   comes in positive goes out negative - ADJUST
-         5. outbound -> outbound  comes in negative goes out negative - DO NOT ADJUST
+         5. outbound -> outbound  comes in positive goes out negative - ADJUST
          6. inbound -> inbound    comes in positive goes out positive - DO NOT ADJUST
        */
 

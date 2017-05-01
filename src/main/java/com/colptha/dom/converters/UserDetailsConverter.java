@@ -17,8 +17,7 @@ public class UserDetailsConverter implements Converter<Employee, UserDetails> {
         UserDetailsImpl userDetails = new UserDetailsImpl();
         userDetails.setUsername(employee.getEmployeeId());
         userDetails.setPassword(employee.getEncryptedPassword());
-        employee.getRoles().forEach(
-                role -> userDetails.getAuthorities().add(new SimpleGrantedAuthority("ROLE_" + role.toString())));
+        userDetails.getAuthorities().add(new SimpleGrantedAuthority("ROLE_" + employee.getRole().toString()));
         return userDetails;
     }
 }

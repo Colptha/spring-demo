@@ -11,8 +11,6 @@ import java.util.Date;
  */
 @Embeddable
 public class ProductLot {
-// assumption: Each shipment will only contain one product lot per product id
-// that is, a product lot is by definition the division of a shipment into its various products
     private Integer quantity;
 
     @Enumerated(EnumType.STRING)
@@ -51,27 +49,12 @@ public class ProductLot {
         return createdOn;
     }
 
-    public void setCreatedOn(Date createdOn) {
-        this.createdOn = createdOn;
-    }
 
-    public Date getUpdatedOn() {
-        return updatedOn;
-    }
-
-    public void setUpdatedOn(Date updatedOn) {
-        this.updatedOn = updatedOn;
-    }
-
-    public ShipmentType getShipmentType() {
-        return shipmentType;
-    }
-
-    public void setShipmentType(ShipmentType shipmentType) {
+    void setShipmentType(ShipmentType shipmentType) {
         this.shipmentType = shipmentType;
     }
 
-    public void updateTimeStamps() {
+    void updateTimeStamps() {
 
         if (createdOn == null) {
             createdOn = new Date();
@@ -80,4 +63,11 @@ public class ProductLot {
         updatedOn = new Date();
     }
 
+    public ShipmentType getShipmentType() {
+        return shipmentType;
+    }
+
+    public Date getUpdatedOn() {
+        return updatedOn;
+    }
 }

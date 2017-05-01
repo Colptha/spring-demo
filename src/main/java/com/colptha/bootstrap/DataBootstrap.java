@@ -4,7 +4,6 @@ import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.Address;
-import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.dom.enums.Role;
 import com.colptha.dom.enums.ShipmentType;
@@ -15,11 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by Colptha on 3/31/17.
@@ -97,35 +91,35 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         employee1.setLastName("Gill");
         employee1.setAddress(address1);
         employee1.setPassword("password");
-        employee1.addRole(Role.ADMIN);
+        employee1.setRole("ADMIN");
 
         employee2.setEmployeeId("a002");
         employee2.setFirstName("Sandy");
         employee2.setLastName("Wilson");
         employee2.setAddress(address2);
         employee2.setPassword("password");
-        employee2.addRole(Role.MANAGER);
+        employee2.setRole("MANAGER");
 
         employee3.setEmployeeId("a003");
         employee3.setFirstName("Martin");
         employee3.setLastName("Bucer");
         employee3.setAddress(address3);
         employee3.setPassword("password");
-        employee3.addRole(Role.USER);
+        employee3.setRole("USER");
 
         employee4.setEmployeeId("b001");
         employee4.setFirstName("Bill");
         employee4.setLastName("Thompson");
         employee4.setAddress(address4);
         employee4.setPassword("password");
-        employee4.addRole(Role.USER);
+        employee4.setRole("USER");
 
         employee5.setEmployeeId("b002");
         employee5.setFirstName("Jason");
         employee5.setLastName("Ruby");
         employee5.setAddress(address5);
         employee5.setPassword("password");
-        employee5.addRole(Role.USER);
+        employee5.setRole("USER");
 
         try {
             employeeService.saveOrUpdate(employee1);

@@ -6,6 +6,9 @@ a:hover {
     color: #700;
     text-decoration: none;
 }
+body {
+    padding-top: 70px;
+}
 button {
     margin-bottom: 15px;
     margin-left: 30%;
@@ -23,19 +26,24 @@ dt {
     text-align: right;
     padding: 0 15px 10px 0;
 }
+header {
+    margin-bottom: 35px;
+}
+
 input {
     width: 80%;
 }
-
 th {
     color: #fff;
     background-color: #333;
 }
-
-footer.jumbotron {
-    margin-bottom: 0;
+.account-options a {
+    display: inline-block;
+    width: 12em;
+    padding: 5px;
+    border-radius: 5px;
+    margin-bottom: 1em;
 }
-
 .delete-options {
     text-align: center;
 }
@@ -49,6 +57,10 @@ footer.jumbotron {
     color: #911;
     margin-left: 30%;
 }
+.frontdoor {
+    margin-top: 5em;
+    padding: 6em;
+}
 .has-error {
     background-color: #fee;
     border-color: #f66;
@@ -56,8 +68,14 @@ footer.jumbotron {
 .identifier {
     text-align: center;
 }
+.inventory-error {
+    margin-top: 2em;
+    margin-bottom: 3em;
+}
 .login {
-    background: pink;
+    background: #ddd;
+    padding-top: 3em;
+    margin-top: 3em;
 }
 .manage-button {
     padding: 20vh 0;
@@ -80,6 +98,25 @@ footer.jumbotron {
     background: #ccc;
     color: #700;
 }
+.navbar ul li {
+    float: left;
+    list-style-type: none;
+}
+.navbar a {
+    display: block;
+    padding: 1em;
+    color: #fff;
+    background-color: #555;
+    border-radius: 8px;
+    margin: 1em;
+}
+.navbar a:hover {
+    color: #fff;
+    background-color: #700;
+}
+.navbar .account {
+    float: right;
+}
 .navigation-button {
     padding: 5px;
     text-align: center;
@@ -89,6 +126,10 @@ footer.jumbotron {
     width: 8em;
     text-align: center;
     margin-bottom: 2em;
+}
+.page {
+    position: relative;
+    min-height: 100%;
 }
 .view-me {
     font-weight: bold;

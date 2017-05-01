@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
-    <title>Warehouse | Employee Form</title>
+    <title>My Account</title>
     <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
           th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
     <link rel="stylesheet" href="../../static/css/styles.css"
@@ -14,79 +14,29 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <header th:replace="fragments :: .header"></header>
 
 <main class="container">
-    <nav class="row">
-        <div class="col-md-12">
-            <h2 class="jumbotron identifier">
-                <a th:href="@{/employee/all}">Back to Employees</a>
-            </h2>
-        </div>
-    </nav>
-    <div class="row">
-        <div class="col-md-12">
 
-            <dl th:if="${!employeeForm.newEmployee}">
-                <dt>Employee ID:</dt><!--
-                --><dd th:text="${employeeForm.employeeId}">ID</dd>
-                <dt>Last Updated:</dt><!--
-                --><dd th:text="${#dates.format(employeeForm.updatedOn, 'dd MMM yyyy')
-                + ' at ' + #dates.format(employeeForm.updatedOn, 'HH:mm')}"></dd>
+    <div class="row" th:with="lastUpdated=${#dates.format(employeeForm.updatedOn, 'MMM dd yyyy HH:mm')}">
+        <div class="col-md-8">
+
+            <dl>
+                <dt>Employee ID:</dt>
+                <dd th:text="${employeeForm.employeeId}">ID</dd>
+                <dt>Last Updated:</dt>
+                <dd th:text="${lastUpdated}"></dd>
             </dl>
 
-            <form th:object="${employeeForm}" th:action="@{/employee}" method="post">
+            <form th:object="${employeeForm}" th:action="@{/account/edit}" method="post">
 
                 <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
                     <p th:text="#{form.hasErrors}">Error Message</p>
                 </div>
 
-                <input type="hidden" th:field="*{employeeId}" th:unless="${__*{newEmployee}__}"/>
-                <input type="hidden" th:field="*{version}"    th:unless="${__*{newEmployee}__}"/>
-                <input type="hidden" th:field="*{newEmployee}" />
+                <input type="hidden" th:field="*{employeeId}"/>
+                <input type="hidden" th:field="*{version}"/>
+                <input type="hidden" th:field="*{newEmployee}"/>
+
                 <fieldset>
                     <dl>
-                        <!---->
-                        <dt th:if="${__*{newEmployee}__}">
-                            <label for="employeeId">Employee ID</label>
-                        </dt>
-                        <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" th:field="*{employeeId}" id="employeeId" th:errorclass="has-error"/>
-                        </dd>
-                        <dd class="error-message" th:if="${not #fields.errors('employeeId').isEmpty()}">
-                            <p th:each="err : ${#fields.errors('employeeId')}" th:text="${err}"></p>
-                        </dd>
-                        <!---->
-                        <dt>
-                            Role
-                        </dt>
-                        <dd>
-                            <label>User
-                                <input type="radio" checked="checked" value="USER" th:field="*{role}"/>
-                            </label>
-                        </dd>
-                        <dd>
-                            <label>Manager
-                                <input type="radio" value="MANAGER" th:field="*{role}"/>
-                            </label>
-                        </dd>
-                        <dd class="error-message" th:if="${not #fields.errors('role').isEmpty())}">
-                            <p th:each="err : ${#fields.errors('role')}" th:text="${err}"></p>
-                        </dd>
-                        <!---->
-                        <dt th:if="${__*{newEmployee}__}">
-                            <label for="newPassword">Password</label>
-                        </dt>
-                        <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" minlength="8" maxlength="25" th:field="*{password}" id="newPassword" th:errorclass="has-error"/>
-                        </dd>
-                        <!---->
-                        <dt th:if="${__*{newEmployee}__}">
-                            <label for="confirmPassword">Password</label>
-                        </dt>
-                        <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" minlength="8" maxlength="25" th:field="*{confirmPassword}" id="confirmPassword" th:errorclass="has-error"/>
-                        </dd>
-                        <dd class="error-message" th:if="${not #fields.errors('password').isEmpty()}">
-                            <p th:each="err : ${#fields.errors('password')}" th:text="${err}"></p>
-                        </dd>
                         <!---->
                         <dt>
                             <label for="firstName">First Name</label>
@@ -167,6 +117,9 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                     </div>
                 </fieldset>
             </form>
+        </div>
+        <div class="col-md-4 account-options">
+            <a class="my-button identifier" th:href="@{/account/show}">My Account</a>
         </div>
     </div>
 </main>

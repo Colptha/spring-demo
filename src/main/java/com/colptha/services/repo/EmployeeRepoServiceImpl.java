@@ -1,12 +1,14 @@
 package com.colptha.services.repo;
 
 import com.colptha.dom.command.EmployeeForm;
+import com.colptha.dom.command.PasswordForm;
 import com.colptha.dom.converters.EmployeeConverter;
 import com.colptha.dom.converters.UserDetailsConverter;
 import com.colptha.dom.entities.Employee;
 import com.colptha.services.EmployeeService;
 import com.colptha.services.repo.interfaces.EmployeeRepository;
 import com.colptha.services.security.EncryptionService;
+import com.colptha.services.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -90,9 +92,25 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
             currentEmployee.setCreatedOn(existingEmployee.getCreatedOn());
             currentEmployee.setDatabaseId(existingEmployee.getDatabaseId());
             currentEmployee.setEncryptedPassword(existingEmployee.getEncryptedPassword());
+            currentEmployee.setRole(existingEmployee.getRole().name());
         }
 
         return employeeConverter.convert(employeeRepository.save(currentEmployee));
+    }
+
+    @Override
+    public void changePassword(PasswordForm passwordForm, UserDetails userDetails) {
+        Employee employee = employeeRepository.findByEmployeeId(userDetails.getUsername());
+
+        String encryptedPassword = encryptionService.encryptPassword(passwordForm.getNewPassword());
+        employee.setEncryptedPassword(encryptedPassword);
+        // can downcast and change userdetails password
+        // could display message that changes won't take effect until log back in
+        UserDetailsImpl userDetails1 = (UserDetailsImpl) userDetails;
+        userDetails1.setPassword(encryptedPassword);
+
+
+        employeeRepository.save(employee);
     }
 
     @Override

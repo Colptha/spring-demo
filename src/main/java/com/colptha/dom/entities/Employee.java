@@ -1,7 +1,6 @@
 package com.colptha.dom.entities;
 
 import com.colptha.dom.enums.Role;
-import com.colptha.services.security.UserDetailsImpl;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -17,9 +16,8 @@ public class Employee extends AbstractEntityObject {
     private String lastName;
     private String employeeId;
 
-    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Set<Role> roles = new HashSet<>();
+    private Role role;
 
     @Transient
     private String password;
@@ -79,16 +77,12 @@ public class Employee extends AbstractEntityObject {
         this.password = password;
     }
 
-    public void addRole(final Role role) {
-        roles.add(role);
+    public Role getRole() {
+        return role;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(String role) {
+        this.role = Role.valueOf(role);
     }
 
     public String getEncryptedPassword() {

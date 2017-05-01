@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title th:text="'Warehouse | Product ' + ${product.productId}">Warehouse | Product</title>
@@ -9,8 +10,10 @@
           th:href="@{/css/styles.css}"/>
 </head>
 <body>
-<header th:replace="fragments :: header"></header>
-<div class="container">
+<nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+<header th:replace="fragments :: .header"></header>
+
+<main class="container">
     <div class="row">
         <div class="col-md-12">
             <h2 class="jumbotron identifier">
@@ -52,7 +55,7 @@
                 <thead>
                     <tr>
                         <th>Date</th>
-                        <th>Shipment Id</th>
+                        <th>Shipment ID</th>
                         <th>Shipment Details</th>
                         <th>Shipment Type</th>
                         <th>Quantity</th>
@@ -62,7 +65,7 @@
                     <tr th:each="lot : ${lots}">
                         <span th:if="${lot.value.quantity != 0}">
                         <td th:text="${{lot.value.createdOn}}">Shipment Date</td>
-                        <td th:text="${lot.key}">Shipment Id</td>
+                        <td th:text="${lot.key}">Shipment ID</td>
                         <td><a th:href="@{/shipment/show/} + ${lot.key}">View Shipment</a></td>
                         <td th:text="${lot.value.shipmentType}">Shipment Type</td>
                         <td th:text="${lot.value.quantity}">Inventory Change</td>
@@ -72,7 +75,7 @@
             </table>
         </div>
     </div>
-</div>
+</main>
 <footer th:replace="fragments :: footer"></footer>
 </body>
 </html>

@@ -4,6 +4,7 @@ import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.validators.EmployeeFormValidator;
 import com.colptha.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,22 +26,22 @@ public class EmployeeController {
     private EmployeeFormValidator employeeFormValidator;
 
     @Autowired
-    public void setEmployeeService(final EmployeeService employeeService) {
+    public void setEmployeeService(EmployeeService employeeService) {
         this.employeeService = employeeService;
     }
 
     @Autowired
-    public void setEmployeeFormValidator(final EmployeeFormValidator employeeFormValidator) {
+    public void setEmployeeFormValidator(EmployeeFormValidator employeeFormValidator) {
         this.employeeFormValidator = employeeFormValidator;
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping(method = RequestMethod.POST)
     public String postEmployee(@Valid EmployeeForm employeeForm, BindingResult bindingResult) {
 
         employeeFormValidator.validate(employeeForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            bindingResult.getAllErrors().forEach(System.out::println);
             return "employee/form";
         }
 
@@ -53,11 +54,13 @@ public class EmployeeController {
         return "redirect:/employee/all";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/")
     public String root() {
         return "redirect:/employee/all";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("employees", new TreeMap<>(employeeService.listAll()));
@@ -65,6 +68,7 @@ public class EmployeeController {
         return "employee/all";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/show/{id}")
     public String showOne(@PathVariable String id, Model model) {
         model.addAttribute("employee", employeeService.findOne(id));
@@ -72,6 +76,7 @@ public class EmployeeController {
         return "employee/show";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping("/new")
     public String newEmployee(Model model) {
         model.addAttribute("employeeForm", new EmployeeForm());
@@ -79,6 +84,7 @@ public class EmployeeController {
         return "employee/form";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/edit/{id}")
     public String editEmployee(@PathVariable String id, Model model) {
         model.addAttribute("employeeForm", employeeService.findOne(id));
@@ -86,6 +92,7 @@ public class EmployeeController {
         return "employee/form";
     }
 
+    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
     @RequestMapping("/password_reset/{id}")
     public String resetPassword(@PathVariable String id) {
         employeeService.resetPassword(id);
@@ -93,6 +100,7 @@ public class EmployeeController {
         return "redirect:/employee/all";
     }
 
+    @Secured("ROLE_ADMIN")
     @RequestMapping("/remove/{id}")
     public String removeEmployee(@PathVariable String id) {
         employeeService.delete(id);

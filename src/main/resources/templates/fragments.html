@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Fragments</title>
@@ -10,24 +11,35 @@
 </head>
 <body>
 
-<header class="jumbotron" th:fragment="header">
+<nav th:fragment="navbar" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <a href="/index.html"><h1 id="warehouse">Warehouse Management Systems</h1></a>
+        <ul>
+            <li sec:authorize="isAnonymous()"><a th:href="@{/login}">Login</a></li>
+            <li sec:authorize="isAuthenticated()"><a th:href="@{/shipment/all}">Shipments</a></li>
+            <li sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')"><a th:href="@{/product/all}">Products</a></li>
+            <li sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')"><a th:href="@{/employee/all}">Employees</a></li>
+            <li sec:authorize="isAuthenticated()" class="account"><a th:href="@{/account/show}">My Account</a></li>
+            <li sec:authorize="isAuthenticated()" class="account"><a th:href="@{/logout}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
+
+<header class="jumbotron frontdoor" th:fragment="frontdoor">
+    <div class="container">
+        <a sec:authorize="isAuthenticated()" th:href="@{/}"><h1 id="warehouse">Warehouse Management Systems</h1></a>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}"><h1 id="warehouse">Warehouse Management Systems</h1></a>
     </div>
 </header>
 
-<footer class="jumbotron" th:fragment="footer">
-
+<header class="header" th:fragment="header">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <a href="/" class="my-button navigation-button"><h2>Main Menu</h2></a>
-            </div>
-            <div class="col-md-6">
-                <a href="#warehouse" class="my-button navigation-button"><h2>Back to top</h2></a>
-            </div>
-        </div>
+        <a sec:authorize="isAuthenticated()" th:href="@{/}"><h1 id="warehouse">Warehouse Management Systems</h1></a>
+        <a sec:authorize="isAnonymous()" th:href="@{/login}"><h1 id="warehouse">Warehouse Management Systems</h1></a>
     </div>
+</header>
+
+<footer th:fragment="footer">
+
 </footer>
 
 </body>
