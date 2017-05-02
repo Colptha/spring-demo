@@ -2,8 +2,8 @@ package com.colptha.controllers;
 
 import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.command.PasswordForm;
-import com.colptha.dom.validators.EmployeeFormValidator;
-import com.colptha.dom.validators.PasswordFormValidator;
+import com.colptha.dom.validators.interfaces.EmployeeFormValidator;
+import com.colptha.dom.validators.interfaces.PasswordFormValidator;
 import com.colptha.services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;

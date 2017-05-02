@@ -1,7 +1,8 @@
 package com.colptha.controllers;
 
 import com.colptha.dom.command.ShipmentForm;
-import com.colptha.dom.validators.ShipmentFormValidator;
+import com.colptha.dom.entities.ProductLot;
+import com.colptha.dom.validators.interfaces.ShipmentFormValidator;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.validation.Valid;
+import java.util.TreeMap;
 
 /**
  * Created by Colptha on 4/7/17.
@@ -96,9 +98,11 @@ public class ShipmentController {
     @RequestMapping("/edit/{id}")
     public String editShipment(@PathVariable Integer id, Model model) {
         ShipmentForm shipmentForm = shipmentService.findOne(id);
+        TreeMap<Integer, ProductLot> lots = shipmentService.listProductLotsByProductId(shipmentForm);
+        lots.forEach((integer, productLot) -> shipmentForm.getPossibleProductLots().get(integer).setQuantity(productLot.getQuantity()));
 
         model.addAttribute("shipmentForm", shipmentForm);
-        model.addAttribute("lots", shipmentService.listProductLotsByProductId(shipmentForm));
+        model.addAttribute("lots", lots);
 
         return "shipment/form";
     }

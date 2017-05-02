@@ -29,6 +29,7 @@
                     <th scope="col">Shipment ID</th>
                     <th scope="col">Created</th>
                     <th scope="col">Updated</th>
+                    <th scope="col">Type</th>
                     <th scope="col">Shipment Details</th>
                     <th scope="col">Edit Shipment</th>
                     <th scope="col" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">Delete Shipment</th>
@@ -39,6 +40,7 @@
                     <td th:text="${shipment.key}">Shipment Id</td>
                     <td th:text="${shipment.value.createdOn}">Created On</td>
                     <td th:text="${shipment.value.updatedOn}">Updated On</td>
+                    <td th:text="${shipment.value.shipmentType}">Type</td>
                     <td>
                         <a th:href="@{/shipment/show/} + ${shipment.key}">
                             <span class="view-me">View</span>

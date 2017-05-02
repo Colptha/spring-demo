@@ -48,7 +48,7 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
                 .headers().frameOptions().disable().and()
                 .csrf().disable()
 
-                .authorizeRequests().antMatchers("/", "/index","/login","/login?logout").permitAll()
+                .authorizeRequests().antMatchers("/","/login", "/index","/logout_success").permitAll()
                 .and().authorizeRequests().antMatchers("/css/**").permitAll()
                 .and().authorizeRequests().antMatchers("/webjars/**").permitAll()
                 .and().authorizeRequests().antMatchers("/employee/**").hasAnyRole("ADMIN", "MANAGER")
@@ -58,11 +58,13 @@ public class SecConfig extends WebSecurityConfigurerAdapter {
                 .and().authorizeRequests().antMatchers("/h2-console", "/h2-console/**").permitAll()
                 .and().authorizeRequests().antMatchers("/account/**").authenticated()
 
-
                 .and().formLogin()
                     .loginPage("/login")
+                .and().logout()
+                    .logoutSuccessUrl("/logout_success")
+                .and().rememberMe().disable()
 
-                .and().exceptionHandling().accessDeniedPage("/access_denied")
+                .exceptionHandling().accessDeniedPage("/access_denied")
                 .and().authorizeRequests().anyRequest().authenticated();
 
     }

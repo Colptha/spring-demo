@@ -1,10 +1,13 @@
 package com.colptha.controllers;
 
 import com.colptha.dom.command.EmployeeForm;
-import com.colptha.dom.validators.EmployeeFormValidator;
+import com.colptha.dom.validators.interfaces.EmployeeFormValidator;
 import com.colptha.services.EmployeeService;
+import com.colptha.services.security.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +27,12 @@ public class EmployeeController {
 
     private EmployeeService employeeService;
     private EmployeeFormValidator employeeFormValidator;
+    private AuthorityService authorityService;
+
+    @Autowired
+    public void setAuthorityService(AuthorityService authorityService) {
+        this.authorityService = authorityService;
+    }
 
     @Autowired
     public void setEmployeeService(EmployeeService employeeService) {
@@ -35,9 +44,15 @@ public class EmployeeController {
         this.employeeFormValidator = employeeFormValidator;
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping(method = RequestMethod.POST)
-    public String postEmployee(@Valid EmployeeForm employeeForm, BindingResult bindingResult) {
+    public String postEmployee(@AuthenticationPrincipal UserDetails userDetails,
+                               @Valid EmployeeForm employeeForm,
+                               BindingResult bindingResult) {
+
+        if (!authorityService.hasAuthorityToEditEmployee(employeeForm, userDetails)) {
+            return "authority_denied";
+        }
 
         employeeFormValidator.validate(employeeForm, bindingResult);
 
@@ -54,13 +69,13 @@ public class EmployeeController {
         return "redirect:/employee/all";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping("/")
     public String root() {
         return "redirect:/employee/all";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("employees", new TreeMap<>(employeeService.listAll()));
@@ -68,7 +83,7 @@ public class EmployeeController {
         return "employee/all";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping("/show/{id}")
     public String showOne(@PathVariable String id, Model model) {
         model.addAttribute("employee", employeeService.findOne(id));
@@ -79,22 +94,35 @@ public class EmployeeController {
     @Secured("ROLE_ADMIN")
     @RequestMapping("/new")
     public String newEmployee(Model model) {
-        model.addAttribute("employeeForm", new EmployeeForm());
+        model.addAttribute("employeeForm", EmployeeForm.createEmployeeForm());
 
         return "employee/form";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping("/edit/{id}")
-    public String editEmployee(@PathVariable String id, Model model) {
-        model.addAttribute("employeeForm", employeeService.findOne(id));
+    public String editEmployee(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id, Model model) {
+        EmployeeForm employeeForm = employeeService.findOne(id);
+
+        if (!authorityService.hasAuthorityToEditEmployee(employeeForm, userDetails)) {
+            return "authority_denied";
+        }
+
+        model.addAttribute("employeeForm", employeeForm);
 
         return "employee/form";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
     @RequestMapping("/password_reset/{id}")
-    public String resetPassword(@PathVariable String id) {
+    public String resetPassword(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
+        EmployeeForm employeeForm = employeeService.findOne(id);
+        if (userDetails.getUsername().equals(id)) {
+            return "authority_denied";
+        }
+        if (!authorityService.hasAuthorityToEditEmployee(employeeForm, userDetails)) {
+            return "authority_denied";
+        }
         employeeService.resetPassword(id);
 
         return "redirect:/employee/all";
@@ -102,7 +130,10 @@ public class EmployeeController {
 
     @Secured("ROLE_ADMIN")
     @RequestMapping("/remove/{id}")
-    public String removeEmployee(@PathVariable String id) {
+    public String removeEmployee(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
+        if (userDetails.getUsername().equals(id)) {
+            return "authority_denied";
+        }
         employeeService.delete(id);
 
         return "redirect:/employee/all";

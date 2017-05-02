@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Warehouse | Home</title>
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.4/css/bootstrap.min.css"
+          th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" href="../../static/css/styles.css"
+          th:href="@{/css/styles.css}"/>
+</head>
+<body>
+<nav th:replace="fragments :: navbar" sec:authorize="isAuthenticated()"></nav>
+<header th:replace="fragments :: frontdoor"></header>
+
+<main class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="access_denied">
+                <h2>Access Denied</h2>
+                <p>You do not have permission to complete this action.</p>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

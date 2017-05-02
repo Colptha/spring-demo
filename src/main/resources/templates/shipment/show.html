@@ -73,7 +73,7 @@
                     <th>Product ID</th>
                     <th>Inventory Change</th>
                     <th>Updated On</th>
-                    <th>Product Details</th>
+                    <th sec:authorize="hasAnyRole('ADMIN','MANAGER')">Product Details</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -82,7 +82,7 @@
                     <td th:text="${productLot.value.productId}">Product ID</td>
                     <td th:text="${productLot.value.quantity}">Quantity</td>
                     <td th:text="${productLot.value.updatedOn}">Updated On</td>
-                    <td>
+                    <td sec:authorize="hasAnyRole('ADMIN','MANAGER')">
                         <a href="show.html" th:href="@{/product/show/} + ${productLot.value.productId}">
                             <span class="view-me">View This Product</span>
                         </a>

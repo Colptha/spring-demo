@@ -34,8 +34,11 @@
 
             <form th:object="${shipmentForm}" th:action="@{/shipment}" method="post">
 
-                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
-                    <p th:text="#{form.hasErrors}">Error Message</p>
+                <div th:if="${#fields.hasErrors('*')}">
+                    <p class="alert alert-danger" th:text="#{form.hasErrors}">Error Message</p>
+                    <ul class="alert alert-danger">
+                        <li th:each="err : ${#fields.allErrors()}" th:text="${err}">Error</li>
+                    </ul>
                 </div>
 
                 <input type="hidden" th:field="*{shipmentId}" th:if="${not shipmentForm.isNewShipment}"/>
@@ -82,7 +85,7 @@
                             <td th:text="${productLot.getProductId()}">Product Id
                             </td>
                             <td>
-                                <input th:field="*{possibleProductLots[__${stat.index}__].quantity}"/>
+                                <input th:errorclass="'alert-danger'" type="number" th:field="*{possibleProductLots[__${stat.index}__].quantity}"/>
                             </td>
                         </tr>
                         </tbody>

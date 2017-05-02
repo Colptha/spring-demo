@@ -78,4 +78,10 @@ public class EmployeeForm extends AbstractCommandObject {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public static EmployeeForm createEmployeeForm() {
+        EmployeeForm employeeForm = new EmployeeForm();
+        employeeForm.setRole("USER");
+        return employeeForm;
+    }
 }

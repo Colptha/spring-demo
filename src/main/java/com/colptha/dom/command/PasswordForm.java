@@ -20,7 +20,7 @@ public class PasswordForm {
         return newPassword;
     }
 
-    void setNewPassword(String newPassword) {
+    public void setNewPassword(String newPassword) {
         this.newPassword = newPassword;
     }
 
@@ -28,7 +28,7 @@ public class PasswordForm {
         return confirmPassword;
     }
 
-    void setConfirmPassword(String confirmPassword) {
+    public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
 }

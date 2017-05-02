@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <meta charset="UTF-8"/>
     <title>Warehouse | Employee Form</title>
@@ -26,9 +26,11 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 
             <dl th:if="${!employeeForm.newEmployee}">
                 <dt>Employee ID:</dt><!--
-                --><dd th:text="${employeeForm.employeeId}">ID</dd>
+                -->
+                <dd th:text="${employeeForm.employeeId}">ID</dd>
                 <dt>Last Updated:</dt><!--
-                --><dd th:text="${#dates.format(employeeForm.updatedOn, 'dd MMM yyyy')
+                -->
+                <dd th:text="${#dates.format(employeeForm.updatedOn, 'dd MMM yyyy')
                 + ' at ' + #dates.format(employeeForm.updatedOn, 'HH:mm')}"></dd>
             </dl>
 
@@ -39,8 +41,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                 </div>
 
                 <input type="hidden" th:field="*{employeeId}" th:unless="${__*{newEmployee}__}"/>
-                <input type="hidden" th:field="*{version}"    th:unless="${__*{newEmployee}__}"/>
-                <input type="hidden" th:field="*{newEmployee}" />
+                <input type="hidden" th:field="*{version}" th:unless="${__*{newEmployee}__}"/>
+                <input type="hidden" th:field="*{newEmployee}"/>
                 <fieldset>
                     <dl>
                         <!---->
@@ -48,26 +50,30 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="employeeId">Employee ID</label>
                         </dt>
                         <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" th:field="*{employeeId}" id="employeeId" th:errorclass="has-error"/>
+                            <input required="required" th:field="*{employeeId}" id="employeeId"
+                                   th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('employeeId').isEmpty()}">
                             <p th:each="err : ${#fields.errors('employeeId')}" th:text="${err}"></p>
                         </dd>
                         <!---->
-                        <dt>
+                        <dt sec:authorize="hasRole('ADMIN')" th:if="${employeeForm.role != 'ADMIN'}">
                             Role
                         </dt>
-                        <dd>
-                            <label>User
-                                <input type="radio" checked="checked" value="USER" th:field="*{role}"/>
+                        <dd sec:authorize="hasRole('ADMIN')" th:if="${employeeForm.role != 'ADMIN'}">
+
+                            <label>Admin
+                                <input type="radio" th:value="'ADMIN'" th:field="*{role}"/>
                             </label>
-                        </dd>
-                        <dd>
                             <label>Manager
-                                <input type="radio" value="MANAGER" th:field="*{role}"/>
+                                <input type="radio" th:value="'MANAGER'" th:field="*{role}"/>
                             </label>
+                            <label>User
+                                <input type="radio" th:value="'USER'" th:field="*{role}"/>
+                            </label>
+
                         </dd>
-                        <dd class="error-message" th:if="${not #fields.errors('role').isEmpty())}">
+                        <dd class="error-message" th:if="${not #fields.errors('role').isEmpty()}">
                             <p th:each="err : ${#fields.errors('role')}" th:text="${err}"></p>
                         </dd>
                         <!---->
@@ -75,14 +81,16 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="newPassword">Password</label>
                         </dt>
                         <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" minlength="8" maxlength="25" th:field="*{password}" id="newPassword" th:errorclass="has-error"/>
+                            <input required="required" minlength="8" maxlength="25" th:field="*{password}"
+                                   id="newPassword" th:errorclass="has-error"/>
                         </dd>
                         <!---->
                         <dt th:if="${__*{newEmployee}__}">
-                            <label for="confirmPassword">Password</label>
+                            <label for="confirmPassword">Confirm Password</label>
                         </dt>
                         <dd th:if="${__*{newEmployee}__}">
-                            <input required="required" minlength="8" maxlength="25" th:field="*{confirmPassword}" id="confirmPassword" th:errorclass="has-error"/>
+                            <input required="required" minlength="8" maxlength="25" th:field="*{confirmPassword}"
+                                   id="confirmPassword" th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('password').isEmpty()}">
                             <p th:each="err : ${#fields.errors('password')}" th:text="${err}"></p>
@@ -92,7 +100,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="firstName">First Name</label>
                         </dt>
                         <dd>
-                            <input required="required" th:field="*{firstName}" id="firstName" th:errorclass="has-error"/>
+                            <input required="required" th:field="*{firstName}" id="firstName"
+                                   th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('firstName').isEmpty()}">
                             <p th:each="err : ${#fields.errors('firstName')}" th:text="${err}"></p>
@@ -112,7 +121,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="addressLine1">Address Line 1</label>
                         </dt>
                         <dd>
-                            <input required="required" th:field="*{address.line1}" id="addressLine1" th:errorclass="has-error"/>
+                            <input required="required" th:field="*{address.line1}" id="addressLine1"
+                                   th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('address.line1').isEmpty()}">
                             <p th:each="err : ${#fields.errors('address.line1')}" th:text="${err}"></p>
@@ -142,7 +152,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="state">State</label>
                         </dt>
                         <dd>
-                            <input required="required" th:field="*{address.state}" id="state" th:errorclass="has-error"/>
+                            <input required="required" th:field="*{address.state}" id="state"
+                                   th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('address.state').isEmpty()}">
                             <p th:each="err : ${#fields.errors('address.state')}" th:text="${err}"></p>
@@ -152,7 +163,8 @@ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
                             <label for="zipcode">Zipcode</label>
                         </dt>
                         <dd>
-                            <input required="required" th:field="*{address.zipcode}" id="zipcode" th:errorclass="has-error"/>
+                            <input required="required" th:field="*{address.zipcode}" id="zipcode"
+                                   th:errorclass="has-error"/>
                         </dd>
                         <dd class="error-message" th:if="${not #fields.errors('address.zipcode').isEmpty()}">
                             <p th:each="err : ${#fields.errors('address.zipcode')}" th:text="${err}"></p>

@@ -1,20 +1,19 @@
 package com.colptha.dom.validators;
 
 import com.colptha.dom.command.PasswordForm;
-import com.colptha.services.EmployeeService;
+import com.colptha.dom.validators.interfaces.PasswordFormValidator;
 import com.colptha.services.security.EncryptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 /**
  * Created by Colptha on 4/27/17.
  */
 @Component
-public class PasswordFormValidator implements Validator {
+public class PasswordFormValidatorImpl implements PasswordFormValidator {
     private EncryptionService encryptionService;
 
     @Autowired
@@ -31,6 +30,15 @@ public class PasswordFormValidator implements Validator {
     public void validate(Object o, Errors errors) {
         PasswordForm passwordForm = (PasswordForm) o;
 
+        if (passwordForm.getCurrentPassword() == null) {
+            errors.rejectValue("currentPassword", "PasswordEmpty", "Field must be filled out");
+        }
+        if (passwordForm.getNewPassword() == null) {
+            errors.rejectValue("newPassword", "PasswordEmpty", "Field must be filled out");
+        }
+        if (passwordForm.getConfirmPassword() == null) {
+            errors.rejectValue("confirmPassword", "PasswordEmpty", "Field must be filled out");
+        }
         if (passwordForm.getNewPassword().length() < 8) {
             errors.rejectValue("newPassword", "PasswordTooShort","Password must be at least 8 characters");
         }

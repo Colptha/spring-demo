@@ -46,17 +46,27 @@
                         </a>
                     </td>
                     <td>
-                        <a th:href="@{/employee/edit/} + ${employee.value.employeeId}">
+                        <a th:if="${
+                        (#authentication.getAuthorities().toArray()[0].toString().equals('ROLE_ADMIN') and employee.value.role != 'ADMIN') or
+                        (#authentication.getAuthorities().toArray()[0].toString().equals('ROLE_MANAGER') and employee.value.role != 'ADMIN' and employee.value.role != 'MANAGER') or
+                        #authentication.getName().equals(employee.value.employeeId)
+                        }"
+                           th:href="@{/employee/edit/} + ${employee.value.employeeId}">
                             <span class="view-me">Edit</span>
                         </a>
                     </td>
                     <td sec:authorize="hasRole('ROLE_ADMIN')">
-                        <a th:href="@{/employee/remove/} + ${employee.value.employeeId}">
+                        <a th:if="${#authentication.getName() != employee.value.employeeId}"
+                           th:href="@{/employee/remove/} + ${employee.value.employeeId}">
                             <span class="view-me">Remove</span>
                         </a>
                     </td>
                     <td>
-                        <a th:href="@{/employee/password_reset/} + ${employee.value.employeeId}">
+                        <a th:if="${
+                        (#authentication.getAuthorities().toArray()[0].toString().equals('ROLE_ADMIN') and employee.value.role != 'ADMIN') or
+                        (#authentication.getAuthorities().toArray()[0].toString().equals('ROLE_MANAGER') and employee.value.role != 'ADMIN' and employee.value.role != 'MANAGER')
+                        }"
+                           th:href="@{/employee/password_reset/} + ${employee.value.employeeId}">
                             <span class="view-me">Reset</span>
                         </a>
                     </td>

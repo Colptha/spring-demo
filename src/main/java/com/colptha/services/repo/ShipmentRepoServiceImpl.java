@@ -104,7 +104,8 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
 
     @Override
     public void delete(Integer shipmentId) {
-        shipmentRepository.delete(shipmentId);
+        int databaseId = shipmentRepository.findByShipmentId(shipmentId).getDatabaseId();
+        shipmentRepository.delete(databaseId);
     }
 
     @Override

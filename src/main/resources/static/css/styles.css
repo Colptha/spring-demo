@@ -29,9 +29,11 @@ dt {
 header {
     margin-bottom: 35px;
 }
-
 input {
     width: 80%;
+}
+li {
+    list-style-type: none;
 }
 th {
     color: #fff;

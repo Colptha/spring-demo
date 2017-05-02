@@ -92,7 +92,12 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
             currentEmployee.setCreatedOn(existingEmployee.getCreatedOn());
             currentEmployee.setDatabaseId(existingEmployee.getDatabaseId());
             currentEmployee.setEncryptedPassword(existingEmployee.getEncryptedPassword());
-            currentEmployee.setRole(existingEmployee.getRole().name());
+            if (employeeForm.getRole() == null) {
+                currentEmployee.setRole(existingEmployee.getRole().name());
+            } else {
+                currentEmployee.setRole(employeeForm.getRole());
+            }
+
         }
 
         return employeeConverter.convert(employeeRepository.save(currentEmployee));

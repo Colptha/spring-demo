@@ -16,7 +16,7 @@
 <main class="container">
     <div class="row">
         <div class="col-md-12">
-            <form name="f" class="login" th:action="@{/login}" method="post">
+            <form sec:authorize="isAnonymous()" name="f" class="login" th:action="@{/login}" method="post">
                 <dl>
                     <dt>
                         <label for="username">Employee ID</label>
@@ -30,12 +30,15 @@
                     <dd>
                         <input required="required" type="password" id="password" name="password"/>
                     </dd>
+                    <dd class="error-message" th:if="${error}">
+                        <p>Incorrect username or password</p>
+                    </dd>
                 </dl>
                 <button type="submit">Login</button>
             </form>
+            <p sec:authorize="isAuthenticated()" class="identifier">You are already logged in</p>
         </div>
     </div>
-
 </main>
 
 </body>

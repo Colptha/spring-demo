@@ -3,8 +3,6 @@ package com.colptha.dom.entities;
 import com.colptha.dom.enums.Role;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by Colptha on 3/31/17.
