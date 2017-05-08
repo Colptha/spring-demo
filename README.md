@@ -18,7 +18,8 @@ This application utilizes:
 * Spring Boot
 * Spring Security
 * Spring MVC
-* Spring Data
+* Spring Data (repository pattern)
+* JPA (Hibernate as implementation provider)
 * Thymeleaf (template engine)
 
 
