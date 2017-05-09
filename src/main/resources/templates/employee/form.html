@@ -21,7 +21,7 @@
             </h2>
         </div>
     </nav>
-    <div class="row">
+    <div class="row" th:with="lastUpdated=${#dates.format(employeeForm.updatedOn, 'MMM dd yyyy HH:mm')}">
         <div class="col-md-12">
 
             <dl th:if="${!employeeForm.newEmployee}">
@@ -30,8 +30,7 @@
                 <dd th:text="${employeeForm.employeeId}">ID</dd>
                 <dt>Last Updated:</dt><!--
                 -->
-                <dd th:text="${#dates.format(employeeForm.updatedOn, 'dd MMM yyyy')
-                + ' at ' + #dates.format(employeeForm.updatedOn, 'HH:mm')}"></dd>
+                <dd th:text="${lastUpdated}"></dd>
             </dl>
 
             <form th:object="${employeeForm}" th:action="@{/employee}" method="post">

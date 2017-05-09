@@ -57,6 +57,7 @@ public class EmployeeController {
         employeeFormValidator.validate(employeeForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            employeeForm.setUpdatedOn(employeeService.findOne(employeeForm.getEmployeeId()).getUpdatedOn());
             return "employee/form";
         }
 

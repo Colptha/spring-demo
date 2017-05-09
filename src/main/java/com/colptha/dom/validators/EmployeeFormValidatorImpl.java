@@ -19,7 +19,7 @@ public class EmployeeFormValidatorImpl implements EmployeeFormValidator {
     private final Pattern addressLine1Pattern = Pattern.compile("^\\d+([ \\-][a-zA-Z]+[.]?){1,3}$");
     private final Pattern addressLine2Pattern = Pattern.compile("^([a-zA-Z]+[.]?[ ])?[a-zA-Z+\\d+]$");
 
-    private final Pattern cityPattern = Pattern.compile("^[a-zA-Z]+([ \\-]?[a-zA-Z]+)*$");
+    private final Pattern cityPattern = Pattern.compile("^([A-Z][a-zA-Z]+[.]?[ ])?[a-zA-Z]+([ \\-]?[a-zA-Z]+)*$");
     private final Pattern statePattern = Pattern.compile("^[A-Z]{2}$");
     private final Pattern zipcodePattern = Pattern.compile("^\\d{5}([-]\\d{4})?$");
 
@@ -55,7 +55,9 @@ public class EmployeeFormValidatorImpl implements EmployeeFormValidator {
         if (!addressLine1Matcher.find()) {
             errors.rejectValue("address.line1", "InvalidAddressLine1", "Line 1 of address is invalid");
         }
-        if (employeeForm.getAddress().getLine2() != null && !addressLine2Matcher.find()) {
+        if (employeeForm.getAddress().getLine2() != null &&
+                !employeeForm.getAddress().getLine2().isEmpty() &&
+                !addressLine2Matcher.find()) {
             errors.rejectValue("address.line2", "InvalidAddressLine2","Line 2 of address is invalid");
         }
         if (!cityMatcher.find()) {

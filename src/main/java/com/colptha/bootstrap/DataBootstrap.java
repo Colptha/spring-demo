@@ -50,33 +50,33 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         address1.setLine1("100 Main Street");
         address1.setLine2("Apt C");
         address1.setCity("St. Louis");
-        address1.setState("Missouri");
+        address1.setState("MO");
         address1.setZipcode("63101");
 
         Address address2 = new Address();
         address2.setLine1("32 Kantian Road");
         address2.setCity("St. Louis");
-        address2.setState("Missouri");
+        address2.setState("MO");
         address2.setZipcode("63102");
 
         Address address3 = new Address();
         address3.setLine1("7892 Apriori Lane");
         address3.setLine2("Apt 12");
         address3.setCity("Collinsville");
-        address3.setState("Illinois");
+        address3.setState("IL");
         address3.setZipcode("62234");
 
         Address address4 = new Address();
         address4.setLine1("125 Beltline Road");
         address4.setCity("Belleville");
-        address4.setState("Illinois");
+        address4.setState("IL");
         address4.setZipcode("62221");
 
         Address address5 = new Address();
         address5.setLine1("3410 Descartes Street");
         address5.setLine2("Apt 7");
         address5.setCity("St. Louis");
-        address5.setState("Missouri");
+        address5.setState("MO");
         address5.setZipcode("63101");
 
         EmployeeForm employee1 = new EmployeeForm();
