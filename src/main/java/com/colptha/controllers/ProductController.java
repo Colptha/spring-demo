@@ -5,8 +5,10 @@ import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -30,21 +32,21 @@ public class ProductController {
     @Autowired
     public void setProductService(ProductService productService) { this.productService = productService; }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/")
     public String root() {
         return "redirect:/product/all";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/all")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("products", new TreeMap<>(productService.listAll()));
         return "product/all";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/show/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/show/{id}")
     public String showOne(@PathVariable ProductId id, Model model) {
         model.addAttribute("product", productService.findOne(id));
         model.addAttribute("lots", shipmentService.listProductLotsByShipmentId(id));

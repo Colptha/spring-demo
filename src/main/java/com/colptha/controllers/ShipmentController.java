@@ -7,12 +7,11 @@ import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.TreeMap;
@@ -41,14 +40,14 @@ public class ShipmentController {
     @Autowired
     public void setShipmentService(ShipmentService shipmentService) { this.shipmentService = shipmentService; }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @GetMapping("/")
     public String root() {
         return "redirect:/shipment/all";
     }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping(method = RequestMethod.POST)
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @PostMapping
     public String saveShipment(@Valid ShipmentForm shipmentForm, BindingResult bindingResult) {
 
         shipmentFormValidator.validate(shipmentForm, bindingResult);
@@ -66,16 +65,16 @@ public class ShipmentController {
         return "redirect:/shipment/all";
     }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/all")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @GetMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("shipments", shipmentService.listAll());
 
         return "shipment/all";
     }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/show/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @GetMapping("/show/{id}")
     public String showOne(@PathVariable Integer id, Model model) {
         ShipmentForm shipmentForm = shipmentService.findOne(id);
 
@@ -85,8 +84,8 @@ public class ShipmentController {
         return "shipment/show";
     }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/new")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @GetMapping("/new")
     public String newShipment(Model model) {
         model.addAttribute("shipmentForm", new ShipmentForm());
         model.addAttribute("products", productService.listAll());
@@ -94,8 +93,8 @@ public class ShipmentController {
         return "shipment/form";
     }
 
-    @Secured({"ROLE_USER","ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
+    @GetMapping("/edit/{id}")
     public String editShipment(@PathVariable Integer id, Model model) {
         ShipmentForm shipmentForm = shipmentService.findOne(id);
         TreeMap<Integer, ProductLot> lots = shipmentService.listProductLotsByProductId(shipmentForm);
@@ -107,16 +106,16 @@ public class ShipmentController {
         return "shipment/form";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping("/delete/confirm/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/delete/confirm/{id}")
     public String confirmDelete(@PathVariable Integer id, Model model) {
         model.addAttribute("shipmentId", id);
 
         return "shipment/delete";
     }
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
-    @RequestMapping(value = "/delete/{id}", method = RequestMethod.POST)
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PostMapping(value = "/delete/{id}")
     public String deleteShipment(@PathVariable Integer id) {
 
 

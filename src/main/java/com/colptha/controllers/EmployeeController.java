@@ -6,14 +6,13 @@ import com.colptha.services.EmployeeService;
 import com.colptha.services.security.AuthorityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.TreeMap;
@@ -44,8 +43,8 @@ public class EmployeeController {
         this.employeeFormValidator = employeeFormValidator;
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping(method = RequestMethod.POST)
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @PostMapping
     public String postEmployee(@AuthenticationPrincipal UserDetails userDetails,
                                @Valid EmployeeForm employeeForm,
                                BindingResult bindingResult) {
@@ -70,38 +69,38 @@ public class EmployeeController {
         return "redirect:/employee/all";
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping("/")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/")
     public String root() {
         return "redirect:/employee/all";
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping("/all")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/all")
     public String listAll(Model model) {
         model.addAttribute("employees", new TreeMap<>(employeeService.listAll()));
 
         return "employee/all";
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping("/show/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/show/{id}")
     public String showOne(@PathVariable String id, Model model) {
         model.addAttribute("employee", employeeService.findOne(id));
 
         return "employee/show";
     }
 
-    @Secured("ROLE_ADMIN")
-    @RequestMapping("/new")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/new")
     public String newEmployee(Model model) {
         model.addAttribute("employeeForm", EmployeeForm.createEmployeeForm());
 
         return "employee/form";
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping("/edit/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/edit/{id}")
     public String editEmployee(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id, Model model) {
         EmployeeForm employeeForm = employeeService.findOne(id);
 
@@ -114,8 +113,8 @@ public class EmployeeController {
         return "employee/form";
     }
 
-    @Secured({"ROLE_MANAGER", "ROLE_ADMIN"})
-    @RequestMapping("/password_reset/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+    @GetMapping("/password_reset/{id}")
     public String resetPassword(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
         EmployeeForm employeeForm = employeeService.findOne(id);
         if (userDetails.getUsername().equals(id)) {
@@ -129,8 +128,8 @@ public class EmployeeController {
         return "redirect:/employee/all";
     }
 
-    @Secured("ROLE_ADMIN")
-    @RequestMapping("/remove/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/remove/{id}")
     public String removeEmployee(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String id) {
         if (userDetails.getUsername().equals(id)) {
             return "authority_denied";

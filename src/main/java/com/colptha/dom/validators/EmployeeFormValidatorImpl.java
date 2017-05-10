@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class EmployeeFormValidatorImpl implements EmployeeFormValidator {
     private final Pattern namePattern = Pattern.compile("^[a-zA-Z]{2,}([ \\-][a-zA-Z]+[.]?)?$");
     private final Pattern addressLine1Pattern = Pattern.compile("^\\d+([ \\-][a-zA-Z]+[.]?){1,3}$");
-    private final Pattern addressLine2Pattern = Pattern.compile("^([a-zA-Z]+[.]?[ ])?[a-zA-Z+\\d+]$");
+    private final Pattern addressLine2Pattern = Pattern.compile("^([A-Z][a-zA-Z]+[.]?[ ])?[\\d]+?[a-zA-Z]?$");
 
     private final Pattern cityPattern = Pattern.compile("^([A-Z][a-zA-Z]+[.]?[ ])?[a-zA-Z]+([ \\-]?[a-zA-Z]+)*$");
     private final Pattern statePattern = Pattern.compile("^[A-Z]{2}$");

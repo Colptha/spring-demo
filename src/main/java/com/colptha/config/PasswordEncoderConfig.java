@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  */
 @Configuration
 public class PasswordEncoderConfig {
+    // this is in a separate file to prevent cyclical dependencies
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);

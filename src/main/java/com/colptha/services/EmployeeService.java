@@ -15,7 +15,7 @@ public interface EmployeeService extends CRUDService<EmployeeForm, String>{
     boolean isIdInUse(EmployeeForm employeeForm);
     UserDetails findUserDetails(String query) throws NoSuchElementException;
 
-    @Secured({"ROLE_MANAGER","ROLE_ADMIN"})
+    @PreAuthorize("hasAnyRole('MANAGER','ADMIN')")
     void resetPassword(String id);
 
     @PreAuthorize("isFullyAuthenticated()")
