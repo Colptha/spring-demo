@@ -67,7 +67,10 @@ public class AccountController {
         employeeFormValidator.validate(employeeForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
-            employeeForm.setUpdatedOn(employeeService.findOne(employeeForm.getEmployeeId()).getUpdatedOn());
+            if (!employeeForm.isNewEmployee()) {
+                employeeForm.setUpdatedOn(employeeService.findOne(employeeForm.getEmployeeId()).getUpdatedOn());
+            }
+
             return "account/edit";
         }
 
