@@ -20,6 +20,7 @@ public class IndexController {
     @GetMapping("/login")
     public String loginForm(@RequestParam(name = "error", required = false) String error, Model model) {
         model.addAttribute("error", error != null);
+
         return "login";
     }
 

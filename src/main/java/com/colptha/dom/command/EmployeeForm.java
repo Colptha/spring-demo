@@ -6,7 +6,7 @@ import com.colptha.dom.entities.Address;
  * Created by Colptha on 4/1/17.
  */
 public class EmployeeForm extends AbstractCommandObject {
-
+    
     private String firstName;
     private String lastName;
     private String employeeId;
