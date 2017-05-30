@@ -2,6 +2,7 @@ package com.colptha.services;
 
 import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.entities.Product;
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.enums.ProductId;
 
 
@@ -10,7 +11,7 @@ import com.colptha.dom.enums.ProductId;
  */
 public interface ProductService extends CRUDService<ProductForm, ProductId> {
 
-    void updateInventory(ProductId productId, Integer quantity) throws Exception;
+    void updateInventory(ProductId productId, Integer quantity) throws NegativeInventoryException;
 
     ProductForm saveOrUpdate(Product product);
 

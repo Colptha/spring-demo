@@ -2,6 +2,7 @@ package com.colptha.controllers;
 
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.ProductLot;
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.validators.interfaces.ShipmentFormValidator;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 /**
@@ -48,17 +50,18 @@ public class ShipmentController {
 
     @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @PostMapping
-    public String saveShipment(@Valid ShipmentForm shipmentForm, BindingResult bindingResult) {
+    public String saveShipment(ShipmentForm shipmentForm, BindingResult bindingResult) {
 
         shipmentFormValidator.validate(shipmentForm, bindingResult);
 
         if (bindingResult.hasErrors()) {
+            shipmentForm.setUpdatedOn(shipmentService.findOne(shipmentForm.getShipmentId()).getUpdatedOn());
             return "shipment/form";
         }
 
         try {
             shipmentService.saveOrUpdate(shipmentForm);
-        } catch (Exception e) {
+        } catch (NegativeInventoryException e) {
             return "shipment/inventory-error";
         }
 
@@ -76,10 +79,14 @@ public class ShipmentController {
     @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @GetMapping("/show/{id}")
     public String showOne(@PathVariable Integer id, Model model) {
-        ShipmentForm shipmentForm = shipmentService.findOne(id);
-
-        model.addAttribute("shipment", shipmentForm);
-        model.addAttribute("lots", shipmentService.listProductLotsByProductId(shipmentForm));
+        try {
+            ShipmentForm shipmentForm = shipmentService.findOne(id);
+            model.addAttribute("shipment", shipmentForm);
+            model.addAttribute("lots", shipmentService.listProductLotsByProductId(shipmentForm));
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return "redirect:/shipment/all";
+        }
 
         return "shipment/show";
     }
@@ -96,12 +103,18 @@ public class ShipmentController {
     @PreAuthorize("hasAnyRole('USER', 'MANAGER', 'ADMIN')")
     @GetMapping("/edit/{id}")
     public String editShipment(@PathVariable Integer id, Model model) {
-        ShipmentForm shipmentForm = shipmentService.findOne(id);
-        TreeMap<Integer, ProductLot> lots = shipmentService.listProductLotsByProductId(shipmentForm);
-        lots.forEach((integer, productLot) -> shipmentForm.getPossibleProductLots().get(integer).setQuantity(productLot.getQuantity()));
+        try {
+            ShipmentForm shipmentForm = shipmentService.findOne(id);
 
-        model.addAttribute("shipmentForm", shipmentForm);
-        model.addAttribute("lots", lots);
+            TreeMap<Integer, ProductLot> lots = shipmentService.listProductLotsByProductId(shipmentForm);
+            lots.forEach((integer, productLot) -> shipmentForm.getPossibleProductLots().get(integer).setQuantity(productLot.getQuantity()));
+
+            model.addAttribute("shipmentForm", shipmentForm);
+            model.addAttribute("lots", lots);
+        } catch (NoSuchElementException e) {
+            System.out.println(e.getMessage());
+            return "redirect:/shipment/all";
+        }
 
         return "shipment/form";
     }
@@ -118,10 +131,9 @@ public class ShipmentController {
     @PostMapping(value = "/delete/{id}")
     public String deleteShipment(@PathVariable Integer id) {
 
-
         try {
             shipmentService.clearInventoryByShipmentId(id);
-        } catch (Exception e) {
+        } catch (NegativeInventoryException e) {
             return "shipment/inventory-error";
         }
 

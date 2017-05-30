@@ -109,11 +109,9 @@ public class EmployeeRepoServiceImpl implements EmployeeService {
 
         String encryptedPassword = encryptionService.encryptPassword(passwordForm.getNewPassword());
         employee.setEncryptedPassword(encryptedPassword);
-        // can downcast and change userdetails password
-        // could display message that changes won't take effect until log back in
+
         UserDetailsImpl userDetails1 = (UserDetailsImpl) userDetails;
         userDetails1.setPassword(encryptedPassword);
-
 
         employeeRepository.save(employee);
     }

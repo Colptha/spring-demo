@@ -4,6 +4,7 @@ import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.converters.ShipmentConverter;
 import com.colptha.dom.entities.ProductLot;
 import com.colptha.dom.entities.Shipment;
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.services.ProductService;
 import com.colptha.services.ShipmentService;
@@ -65,12 +66,14 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
 
     @Override
     public ShipmentForm findOne(Integer shipmentId) throws NoSuchElementException {
-        return shipmentConverter.convert(shipmentRepository.findByShipmentId(shipmentId));
+        Shipment shipment = shipmentRepository.findByShipmentId(shipmentId);
+        if (shipment == null) throw new NoSuchElementException("shipmentId " + shipmentId + " not found");
+        return shipmentConverter.convert(shipment);
     }
 
     @Transactional
     @Override
-    public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) throws Exception {
+    public ShipmentForm saveOrUpdate(ShipmentForm shipmentForm) throws NegativeInventoryException {
 
         boolean isNewShipment = shipmentForm.getIsNewShipment();
 
@@ -78,7 +81,7 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
         Integer incomingVersion = currentShipment.getVersion();
 
         Set<ProductLot> currentLots = new HashSet<>();
-        shipmentForm.getPossibleProductLots().forEach(currentLots::add);
+        shipmentForm.getPossibleProductLots().addAll(currentLots);
         currentShipment.setProductLots(currentLots);
 
         Shipment priorShipment = null;
@@ -109,7 +112,7 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
     }
 
     @Override
-    public void clearInventoryByShipmentId(Integer shipmentId) throws Exception {
+    public void clearInventoryByShipmentId(Integer shipmentId) throws NegativeInventoryException {
         Shipment shipment = shipmentRepository.findByShipmentId(shipmentId);
         ShipmentForm shipmentForm = shipmentConverter.convert(shipment);
 

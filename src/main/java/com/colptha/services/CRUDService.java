@@ -11,7 +11,7 @@ public interface CRUDService<Form, QueryParam> {
 
     Form findOne(QueryParam query) throws NoSuchElementException;
 
-    Form saveOrUpdate(Form form) throws Exception;
+    Form saveOrUpdate(Form form);
 
     void delete(QueryParam query);
 }

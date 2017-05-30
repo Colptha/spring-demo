@@ -27,9 +27,11 @@
             <dl th:if="${not shipmentForm.isNewShipment}">
                 <dt>Shipment ID:</dt>
                 <dd th:text="${shipmentForm.shipmentId}">ID</dd>
+
                 <dt>Last Updated:</dt>
                 <dd th:text="${#dates.format(shipmentForm.updatedOn, 'dd MMM yyyy')
                 + ' at ' + #dates.format(shipmentForm.updatedOn, 'HH:mm')}"></dd>
+
             </dl>
 
             <form th:object="${shipmentForm}" th:action="@{/shipment}" method="post">

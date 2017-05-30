@@ -3,6 +3,7 @@ package com.colptha.services.repo;
 import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.converters.ProductConverter;
 import com.colptha.dom.entities.Product;
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.services.ProductService;
 import com.colptha.services.repo.interfaces.ProductRepository;
@@ -75,7 +76,7 @@ public class ProductRepoServiceImpl implements ProductService {
     }
 
     @Override
-    public void updateInventory(ProductId productId, Integer quantity) throws Exception {
+    public void updateInventory(ProductId productId, Integer quantity) throws NegativeInventoryException {
         Product product = productRepository.findByProductId(productId);
         product.adjustInventory(quantity);
 //        must use saveOrUpdate(Product), if converted to ProductForm databaseId is lost and an extra record is created

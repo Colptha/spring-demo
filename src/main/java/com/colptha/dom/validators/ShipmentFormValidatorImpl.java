@@ -31,6 +31,8 @@ public class ShipmentFormValidatorImpl implements ShipmentFormValidator {
 
         boolean lotsAllEmpty = true;
         for (ProductLot lot : shipmentForm.getPossibleProductLots()) {
+            // if text field is submitted empty, interpret as a quantity of 0
+            if (lot.getQuantity() == null) {lot.setQuantity(0);}
             if (lot.getQuantity() > 0) lotsAllEmpty = false;
             if (lot.getQuantity() < 0) {
                 errors.rejectValue("possibleProductLots[" + lot.getProductId().ordinal() + "].quantity",

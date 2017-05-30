@@ -1,5 +1,6 @@
 package com.colptha.dom.entities;
 
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.enums.ProductId;
 
 import javax.persistence.Entity;
@@ -53,9 +54,9 @@ public class Product extends AbstractEntityObject {
         this.productInventory = productInventory;
     }
 
-    public void adjustInventory(Integer quantity) throws Exception {
+    public void adjustInventory(Integer quantity) throws NegativeInventoryException {
         if (this.getProductInventory() + quantity < 0) {
-            throw new Exception("Inventory cannot be negative");
+            throw new NegativeInventoryException("Inventory cannot be negative");
         }
         this.productInventory += quantity;
     }
