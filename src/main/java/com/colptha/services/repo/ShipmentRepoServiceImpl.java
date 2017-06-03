@@ -81,12 +81,11 @@ public class ShipmentRepoServiceImpl implements ShipmentService {
         Integer incomingVersion = currentShipment.getVersion();
 
         Set<ProductLot> currentLots = new HashSet<>();
-        shipmentForm.getPossibleProductLots().addAll(currentLots);
+        currentLots.addAll(shipmentForm.getPossibleProductLots());
         currentShipment.setProductLots(currentLots);
 
         Shipment priorShipment = null;
         Integer shipmentId = null;
-
         if (!shipmentForm.getIsNewShipment()) {
             shipmentId = shipmentForm.getShipmentId();
             priorShipment = shipmentRepository.findByShipmentId(shipmentId);

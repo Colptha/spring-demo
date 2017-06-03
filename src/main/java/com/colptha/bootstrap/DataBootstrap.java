@@ -4,6 +4,7 @@ import com.colptha.dom.command.EmployeeForm;
 import com.colptha.dom.command.ProductForm;
 import com.colptha.dom.command.ShipmentForm;
 import com.colptha.dom.entities.Address;
+import com.colptha.dom.entities.exceptions.NegativeInventoryException;
 import com.colptha.dom.enums.ProductId;
 import com.colptha.dom.enums.ShipmentType;
 import com.colptha.services.EmployeeService;
@@ -120,15 +121,13 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         employee5.setPassword("password");
         employee5.setRole("USER");
 
-        try {
+
             employeeService.saveOrUpdate(employee1);
             employeeService.saveOrUpdate(employee2);
             employeeService.saveOrUpdate(employee3);
             employeeService.saveOrUpdate(employee4);
             employeeService.saveOrUpdate(employee5);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         System.out.println("################# load employees");
     }
@@ -195,7 +194,7 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
         product20.setProductId(ProductId.D5);
         product20.setProductName("Venison");
 
-        try {
+
             productService.saveOrUpdate(product1);
             productService.saveOrUpdate(product2);
             productService.saveOrUpdate(product3);
@@ -216,9 +215,7 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
             productService.saveOrUpdate(product18);
             productService.saveOrUpdate(product19);
             productService.saveOrUpdate(product20);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         System.out.println("################# load products");
     }
@@ -263,7 +260,7 @@ public class DataBootstrap implements ApplicationListener<ContextRefreshedEvent>
             shipmentService.saveOrUpdate(shipment4);
             shipmentService.saveOrUpdate(shipment5);
             shipmentService.saveOrUpdate(shipment6);
-        } catch (Exception e) {
+        } catch (NegativeInventoryException e) {
             e.printStackTrace();
         }
 

@@ -85,11 +85,15 @@ public interface ShipmentService extends CRUDService<ShipmentForm, Integer> {
 
             ProductLot priorLot = priorLots.stream()
                     .filter(lot -> lot.getProductId() == incomingProductId).findFirst().get();
+            incomingProductLot.setCreatedOn(priorLot.getCreatedOn());
 
 
             Integer inventoryDiscrepancy = incomingProductLot.getQuantity() - priorLot.getQuantity();
             if (!inventoryDiscrepancy.equals(0)) {
+                incomingProductLot.setUpdatedOn(new Date());
                 productService.updateInventory(incomingProductId, inventoryDiscrepancy);
+            } else {
+                incomingProductLot.setUpdatedOn(priorLot.getUpdatedOn());
             }
 
         }

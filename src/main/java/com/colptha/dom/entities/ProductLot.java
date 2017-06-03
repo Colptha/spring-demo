@@ -55,19 +55,21 @@ public class ProductLot {
     }
 
     void updateTimeStamps() {
-
         if (createdOn == null) {
+            updatedOn = new Date();
             createdOn = new Date();
         }
-
-        updatedOn = new Date();
-    }
-
-    public ShipmentType getShipmentType() {
-        return shipmentType;
     }
 
     public Date getUpdatedOn() {
         return updatedOn;
+    }
+
+    public void setCreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public void setUpdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 }
